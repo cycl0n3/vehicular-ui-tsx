@@ -1,27 +1,41 @@
 import React from "react";
 
+import { useLocation, useNavigate } from "react-router-dom";
+
 import { Typography } from "antd";
 import { Button, Form, Input } from "antd";
 
-import { FormInstance } from "antd/lib/form";
 import { ValidateErrorEntity } from "rc-field-form/lib/interface";
+
+import { userContext, ICurrentUser } from "../../context/UserContext";
 
 const { Title } = Typography;
 
-const onFinish = (form: FormInstance<any>, values: any) => {
-  console.log("Success:", values);
-  form.resetFields();
-};
-
-const onFinishFailed = (
-  form: FormInstance<any>,
-  errorInfo: ValidateErrorEntity<any>
-) => {
-  console.log("Failed:", errorInfo);
-};
-
 const SignIn = () => {
+  const onFinishFailed = (errorInfo: ValidateErrorEntity<any>) => {
+    console.log("Failed:", errorInfo);
+  };
+
+  const onFinish = (values: any) => {
+    console.log("Success:", values);
+
+    const user: ICurrentUser = {
+      id: 1,
+      username: values.email,
+    };
+
+    setUserLoggedIn(user);
+    
+    navigate("/");
+    window.location.reload();
+  };
+
   const [form] = Form.useForm();
+
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const { setUserLoggedIn } = userContext();
 
   return (
     <div className="sign-in">
@@ -35,10 +49,8 @@ const SignIn = () => {
         wrapperCol={{ span: 8 }}
         style={{ maxWidth: "auto" }}
         initialValues={{ remember: true }}
-        onFinish={(values: any) => onFinish(form, values)}
-        onFinishFailed={(errorInfo: ValidateErrorEntity<any>) =>
-          onFinishFailed(form, errorInfo)
-        }
+        onFinish={onFinish}
+        onFinishFailed={onFinishFailed}
         autoComplete="off"
       >
         <Form.Item
@@ -46,12 +58,12 @@ const SignIn = () => {
           name="email"
           rules={[
             {
-              type: 'email',
-              message: 'The input is not valid E-mail!',
+              type: "email",
+              message: "The input is not valid E-mail!",
             },
             {
               required: true,
-              message: 'Please input your E-mail!',
+              message: "Please input your E-mail!",
             },
           ]}
         >
@@ -69,15 +81,15 @@ const SignIn = () => {
             },
             () => ({
               validator(_, value) {
-                if (!value || value.length >= 4 && value.length <= 16) {
+                if (!value || (value.length >= 4 && value.length <= 16)) {
                   return Promise.resolve();
                 }
 
                 return Promise.reject(
                   new Error("Password must be between 4 and 16 characters!")
                 );
-              }
-            })
+              },
+            }),
           ]}
         >
           <Input.Password />

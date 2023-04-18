@@ -5,8 +5,12 @@ import App from "./App";
 
 import "./index.css";
 
+import { CurrentUserProvider } from "./context/UserContext";
+
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
-    <App />
+    <CurrentUserProvider>
+      <App />
+    </CurrentUserProvider>
   </React.StrictMode>
 );
