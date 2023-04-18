@@ -10,19 +10,23 @@ import {
 
 import "./App.css";
 
-import Home from "./pages/Home";
-import About from "./pages/About";
-import SignIn from "./pages/auth/SignIn";
-import SignUp from "./pages/auth/SignUp";
 import Base from "./pages/_Base";
+
+import { siteRoutes } from "./components/SiteRoutes";
+
+console.log(
+  siteRoutes.slice(1)
+);
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<Base />}>
-      <Route index element={<Home />} />
-      <Route path="about" element={<About />} />
-      <Route path="auth/sign-in" element={<SignIn />} />
-      <Route path="auth/sign-up" element={<SignUp />} />
+      <Route index element={siteRoutes[0].element} />
+
+      {siteRoutes.slice(1).map(route => {
+        return <Route key={route.key} path={route.link} element={route.element} />
+      })}
+
       <Route path="*" element={<div>404</div>} />
     </Route>
   )
