@@ -4,12 +4,12 @@ import { userContext } from '../../context/UserContext';
 
 const Profile = () => {
 
-  const { currentUser } = userContext();
+  const { user } = userContext();
 
   return (
     <div>
       <h1>Profile</h1>
-      <p>Username: {currentUser?.username}</p>
+      <p>Username: {user?.username}</p>
     </div>
   )
 }

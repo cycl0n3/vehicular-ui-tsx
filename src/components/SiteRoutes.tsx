@@ -1,9 +1,10 @@
+import PrivateRoute from './PrivateRoute'
+
 import About from '../pages/home/About'
 import Home from '../pages/home/Home'
 import SignIn from '../pages/auth/SignIn'
 import SignUp from '../pages/auth/SignUp'
 import Profile from '../pages/home/Profile'
-import PrivateRoute from './PrivateRoute'
 import SignOut from '../pages/auth/SignOut'
 
 export const siteRoutes = [

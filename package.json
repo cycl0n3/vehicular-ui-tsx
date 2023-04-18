@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@types/node": "^18.15.11",
     "antd": "^5.4.2",
     "axios": "^1.3.5",
     "react": "^18.2.0",

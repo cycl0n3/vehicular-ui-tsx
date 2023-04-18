@@ -16,7 +16,7 @@ const Base = () => {
     token: { colorBgContainer },
   } = theme.useToken();
 
-  const currentUser = userContext();
+  const userCtx = userContext();
 
   const menuRef = React.useRef(null);
 
@@ -31,7 +31,7 @@ const Base = () => {
   }
 
   const sitesRoutesFiltered = siteRoutes.filter(route => {
-    if(currentUser.isUserLoggedIn()) {
+    if(userCtx.isUserLoggedIn()) {
       if(route.protected) {
         return false;
       }

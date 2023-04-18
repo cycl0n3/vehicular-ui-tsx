@@ -3,42 +3,80 @@ import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import { Typography } from "antd";
+const { Title } = Typography;
+
 import { Button, Form, Input } from "antd";
+import { Spin } from 'antd';
+import { notification } from 'antd';
+
 
 import { ValidateErrorEntity } from "rc-field-form/lib/interface";
 
-import { userContext, ICurrentUser } from "../../context/UserContext";
+import { userContext, IUser } from "../../context/UserContext";
 
-const { Title } = Typography;
+import { connection } from "../../components/Connection";
+
 
 const SignIn = () => {
   const onFinishFailed = (errorInfo: ValidateErrorEntity<any>) => {
-    console.log("Failed:", errorInfo);
+    // console.log("Failed:", errorInfo);
   };
 
   const onFinish = (values: any) => {
-    console.log("Success:", values);
+    // console.log("Success:", values);
 
-    const user: ICurrentUser = {
-      id: 1,
-      username: values.email,
-    };
+    setLoading(true);
 
-    setUserLoggedIn(user);
-    
-    navigate("/");
-    window.location.reload();
+    const username = values.email;
+    const password = values.password;
+
+    connection.authenticate(username, password)
+      .then(response => {
+        // console.log(response);
+        setLoading(false);
+
+        const data = response.data;
+
+        const user: IUser = {
+          username: username,
+          accessToken: data.accessToken,
+        }
+
+        setUserLoggedIn(user);
+
+        navigate("/");
+        window.location.reload();
+      })
+      .catch(error => {
+        setLoading(false);
+
+        openNotificationWithIcon('error');
+      })
   };
 
   const [form] = Form.useForm();
 
   const navigate = useNavigate();
-  const location = useLocation();
 
   const { setUserLoggedIn } = userContext();
 
+  const [loading, setLoading] = React.useState(false);
+
+  const [api, contextHolder] = notification.useNotification();
+
+  type NotificationType = 'success' | 'info' | 'warning' | 'error';
+
+  const openNotificationWithIcon = (type: NotificationType) => {
+    api[type]({
+      message: 'Login Failed',
+      description: 'Please check your username and password and try again.',
+    });
+  };
+
   return (
     <div className="sign-in">
+      {contextHolder}
+
       <Title level={3}>Sign In</Title>
 
       <Form
@@ -104,9 +142,12 @@ const SignIn = () => {
         </Form.Item> */}
 
         <Form.Item wrapperCol={{ offset: 8, span: 8 }}>
-          <Button type="primary" htmlType="submit">
+          { !loading && <Button type="primary" htmlType="submit">
             Submit
-          </Button>
+          </Button> }
+          { loading && <Spin size="large">
+              <div className="content" />
+            </Spin> }
         </Form.Item>
       </Form>
     </div>

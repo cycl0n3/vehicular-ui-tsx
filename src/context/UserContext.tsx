@@ -1,54 +1,54 @@
 import React, { useEffect } from 'react';
 
-export interface ICurrentUser {
-  id: number;
+export interface IUser {
   username: string;
+  accessToken: string;
 }
 
-type CurrentUserContextType = {
-  currentUser: ICurrentUser | undefined;
+type UserContextType = {
+  user: IUser | undefined;
 
-  getCurrentUser: () => ICurrentUser | undefined;
+  getUser: () => IUser | undefined;
   isUserLoggedIn: () => boolean;
-  setUserLoggedIn: (user: ICurrentUser) => void;
+  setUserLoggedIn: (user: IUser) => void;
   setUserLoggedOut: () => void;
 }
 
-const UserContext = React.createContext<CurrentUserContextType | undefined>(undefined);
+const UserContext = React.createContext<UserContextType | undefined>(undefined);
 
-const CurrentUserProvider = ({ children }: any) => {
+const UserProvider = ({ children }: any) => {
   useEffect(() => {
-    const user = getCurrentUser();
-    setCurrentUser(user);
+    const user = getUser();
+    setUser(user);
   }, []);
 
-  const [currentUser, setCurrentUser] = React.useState<ICurrentUser | undefined>(undefined);
+  const [user, setUser] = React.useState<IUser | undefined>(undefined);
 
-  const getCurrentUser = () => {
+  const getUser = () => {
     try {
-      return JSON.parse(localStorage.getItem('currentUser') || '---') as ICurrentUser;
+      return JSON.parse(localStorage.getItem('user') || '---') as IUser;
     } catch (e) {
       return undefined;
     }
   }
   
-  const setUserLoggedIn = (user: ICurrentUser) => {
-    localStorage.setItem('currentUser', JSON.stringify(user));
-    setCurrentUser(user);
+  const setUserLoggedIn = (user: IUser) => {
+    localStorage.setItem('user', JSON.stringify(user));
+    setUser(user);
   }
   
   const setUserLoggedOut = () => {
-    localStorage.removeItem('currentUser');
-    setCurrentUser(undefined);
+    localStorage.removeItem('user');
+    setUser(undefined);
   }
 
   const isUserLoggedIn = () => {
-    return !!localStorage.getItem('currentUser');
+    return !!localStorage.getItem('user');
   }
 
   return (
     <UserContext.Provider 
-      value={{ currentUser, getCurrentUser, isUserLoggedIn, setUserLoggedIn, setUserLoggedOut }}>
+      value={{ user, getUser, isUserLoggedIn, setUserLoggedIn, setUserLoggedOut }}>
       {children}
     </UserContext.Provider>
   )
@@ -56,7 +56,7 @@ const CurrentUserProvider = ({ children }: any) => {
 
 export default  UserContext;
 
-export { CurrentUserProvider };
+export { UserProvider };
 
 export function userContext() {
   const context = React.useContext(UserContext);

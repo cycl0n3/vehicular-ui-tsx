@@ -11,8 +11,8 @@ const PrivateRoute = ({ children }: any) => {
 
   useEffect(() => {
     if (!isUserLoggedIn()) {
-      const url = siteRoutes.find(route => route.key === "sign-in")?.link || "/";
-      navigate(url);    
+      const url = siteRoutes.find(route => route.key === "sign-in")?.link || "/";      
+      navigate(url);
     }
   })
 
