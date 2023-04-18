@@ -1,5 +1,3 @@
-import React from "react";
-
 import { Typography } from "antd";
 import { Button, Form, Input } from "antd";
 
