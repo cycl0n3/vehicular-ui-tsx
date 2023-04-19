@@ -8,6 +8,11 @@ const { Header, Content, Footer } = Layout;
 
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 
+import {
+  useQuery,
+  useMutation,
+} from '@tanstack/react-query';
+
 import { SiteRoute, siteRoutes, GUEST_ROLE } from "../components/SiteRoutes";
 
 import { localUserContext } from "../context/LocalUserContext";
@@ -31,21 +36,26 @@ const Base = () => {
   const [sitesRoutesFiltered, setSitesRoutesFiltered] = useState<SiteRoute[]>([]);
 
   const { getLocalUser } = localUserContext();
-
+  
   useEffect(() => {
-    connection.findMe(getLocalUser())
-      .then((response) => {
-        const data = response.data;
-        setSitesRoutesFiltered(siteRoutes.filter(route => {
-          return route.roles.includes(data.role);
-        }));
-      })
-      .catch((error) => {
-        setSitesRoutesFiltered(siteRoutes.filter(route => {
-          return route.roles.includes(GUEST_ROLE);
-        }));
-      });
+    setSitesRoutesFiltered(siteRoutes.filter(route => {
+      return route.roles.includes(GUEST_ROLE);
+    }));
   }, []);
+
+  const query = useQuery({
+    queryKey: ["me"],
+    queryFn: async () => {
+      const response = await connection.findMe(getLocalUser());
+      const data = response.data;
+      setSitesRoutesFiltered(siteRoutes.filter(route => {
+        return route.roles.includes(data.role);
+      }));
+      return response.data;
+    },
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: true,
+  });
 
   return (
     <Layout>
@@ -55,8 +65,8 @@ const Base = () => {
             float: "left",
             width: 120,
             height: 50,
-            margin: "10px 10px 10px 10px",
-            background: "rgba(255, 255, 255, 0.2)",
+            margin: "0px 10px 10px -50px",
+            background: "#001529",
           }}
         >
           <Avatar size="large" icon={<UserOutlined />} />

@@ -20,12 +20,9 @@ import { connection } from "../../components/Connection";
 
 const SignIn = () => {
   const onFinishFailed = (errorInfo: ValidateErrorEntity<any>) => {
-    // console.log("Failed:", errorInfo);
   };
 
   const onFinish = (values: any) => {
-    // console.log("Success:", values);
-
     setLoading(true);
 
     const username = values.email;
@@ -55,8 +52,6 @@ const SignIn = () => {
   useEffect(() => {
     setUserLoggedOut();
   }, []);
-
-  // const [form] = Form.useForm();
 
   const navigate = useNavigate();
 

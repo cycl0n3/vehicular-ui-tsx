@@ -90,7 +90,7 @@ const Users = () => {
       key: 'role',
       render: (role: string) => (
         <Tag color={role === ADMIN_ROLE ? 'red' : 'green'} key={role}>
-          {role.toUpperCase()}
+          {role}
         </Tag>
       ),
     }

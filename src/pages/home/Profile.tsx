@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { notification, Descriptions } from "antd";
+import { notification, Descriptions, Tag } from "antd";
 
 import {
   useQuery,
@@ -9,6 +9,8 @@ import {
 
 import { localUserContext } from "../../context/LocalUserContext";
 import { connection } from "../../components/Connection";
+
+import { ADMIN_ROLE } from "../../components/SiteRoutes";
 
 const Profile = () => {
   const { getLocalUser } = localUserContext();
@@ -51,7 +53,11 @@ const Profile = () => {
         <Descriptions.Item label="Username">{data.username}</Descriptions.Item>
         <Descriptions.Item label="Name">{data.name}</Descriptions.Item>
         <Descriptions.Item label="Email">{data.email}</Descriptions.Item>
-        <Descriptions.Item label="Role">{data.role}</Descriptions.Item>
+        <Descriptions.Item label="Role">
+          <Tag color={data.role === ADMIN_ROLE ? 'red' : 'green'} key={data.role}>
+            {data.role}
+          </Tag>
+        </Descriptions.Item>
       </Descriptions>}
     </div>
   );
