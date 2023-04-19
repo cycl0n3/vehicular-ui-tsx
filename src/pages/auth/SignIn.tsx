@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import { useLocation, useNavigate } from "react-router-dom";
 
@@ -9,10 +9,11 @@ import { Button, Form, Input } from "antd";
 import { Spin } from 'antd';
 import { notification } from 'antd';
 
-
 import { ValidateErrorEntity } from "rc-field-form/lib/interface";
 
-import { userContext, IUser } from "../../context/UserContext";
+import { localUserContext } from "../../context/LocalUserContext";
+
+import { ILocalUser } from "../../context/ILocalUser";
 
 import { connection } from "../../components/Connection";
 
@@ -32,33 +33,34 @@ const SignIn = () => {
 
     connection.authenticate(username, password)
       .then(response => {
-        // console.log(response);
         setLoading(false);
+        if(response.status === 200) {
+          const user: ILocalUser = {
+            username: username,
+            accessToken: response.data.accessToken,
+          }
 
-        const data = response.data;
+          setUserLoggedIn(user);
 
-        const user: IUser = {
-          username: username,
-          accessToken: data.accessToken,
+          navigate("/");
+          window.location.reload();
         }
-
-        setUserLoggedIn(user);
-
-        navigate("/");
-        window.location.reload();
       })
       .catch(error => {
         setLoading(false);
-
         openNotificationWithIcon('error');
       })
   };
 
-  const [form] = Form.useForm();
+  useEffect(() => {
+    setUserLoggedOut();
+  }, []);
+
+  // const [form] = Form.useForm();
 
   const navigate = useNavigate();
 
-  const { setUserLoggedIn } = userContext();
+  const { setUserLoggedIn, setUserLoggedOut } = localUserContext();
 
   const [loading, setLoading] = React.useState(false);
 
@@ -82,7 +84,7 @@ const SignIn = () => {
       <Form
         labelAlign="right"
         name="basic"
-        form={form}
+        disabled={loading}
         labelCol={{ span: 8 }}
         wrapperCol={{ span: 8 }}
         style={{ maxWidth: "auto" }}

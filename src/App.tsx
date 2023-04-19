@@ -7,14 +7,22 @@ import {
   RouterProvider,
 } from "react-router-dom";
 
-
 import "./App.css";
+
+import {
+  QueryClient,
+  QueryClientProvider,
+} from '@tanstack/react-query';
+
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 import Base from "./pages/_Base";
 
 import { siteRoutes } from "./components/SiteRoutes";
 
-const App: React.FC = () => {
+const queryClient = new QueryClient();
+
+const App = () => {
 
   const router = createBrowserRouter(
     createRoutesFromElements(
@@ -32,7 +40,10 @@ const App: React.FC = () => {
 
   return (
     <div className="App">
-      <RouterProvider router={router} />
+      <QueryClientProvider client={queryClient}>
+        <RouterProvider router={router} />
+        <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
+      </QueryClientProvider>
     </div>
   );
 };

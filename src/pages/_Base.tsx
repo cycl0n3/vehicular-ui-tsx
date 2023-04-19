@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { UserOutlined } from '@ant-design/icons';
 import { Avatar } from 'antd';
@@ -8,51 +8,44 @@ const { Header, Content, Footer } = Layout;
 
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 
-import { siteRoutes } from "../components/SiteRoutes";
-import { userContext } from "../context/UserContext";
+import { SiteRoute, siteRoutes, GUEST_ROLE } from "../components/SiteRoutes";
+
+import { localUserContext } from "../context/LocalUserContext";
+import { connection } from "../components/Connection";
 
 const Base = () => {
   const {
     token: { colorBgContainer },
   } = theme.useToken();
 
-  const userCtx = userContext();
-
-  const menuRef = React.useRef(null);
-
   const navigate = useNavigate();
   const location = useLocation();
 
-  const currentRoute = siteRoutes.find(route => route.link === location.pathname) || siteRoutes[0];
+  const currentRoute: SiteRoute = siteRoutes.find(route => route.link === location.pathname) || siteRoutes[0];
 
-  const navigateToRoute = (key: string) => {    
+  const navigateToRoute = (key: string) => {  
     const path = siteRoutes.find(route => route.key === key) || siteRoutes[0];
     navigate(path.link);
   }
 
-  const sitesRoutesFiltered = siteRoutes.filter(route => {
-    if(userCtx.isUserLoggedIn()) {
-      if(route.protected) {
-        return false;
-      }
+  const [sitesRoutesFiltered, setSitesRoutesFiltered] = useState<SiteRoute[]>([]);
 
-      if(route.private) {
-        return true;
-      }
+  const { getLocalUser } = localUserContext();
 
-      return true;
-    }
-
-    if(route.private) {
-      return false;
-    }
-
-    if(route.protected) {
-      return true;
-    }
-
-    return true;
-  })
+  useEffect(() => {
+    connection.findMe(getLocalUser())
+      .then((response) => {
+        const data = response.data;
+        setSitesRoutesFiltered(siteRoutes.filter(route => {
+          return route.roles.includes(data.role);
+        }));
+      })
+      .catch((error) => {
+        setSitesRoutesFiltered(siteRoutes.filter(route => {
+          return route.roles.includes(GUEST_ROLE);
+        }));
+      });
+  }, []);
 
   return (
     <Layout>
@@ -72,7 +65,6 @@ const Base = () => {
 
         <Menu
           id="menu"
-          ref={menuRef}
           theme="dark"
           mode="horizontal"
           defaultSelectedKeys={[currentRoute.key]}
@@ -84,7 +76,7 @@ const Base = () => {
           items={sitesRoutesFiltered.map(route => {
             return {
               key: route.key,
-              label: route.label,
+              label: route.label,     
             };
           })}
         />

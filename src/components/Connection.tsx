@@ -1,7 +1,8 @@
 import axios from 'axios';
 
 import { config } from './Constants';
-import { IUser } from '../context/UserContext';
+
+import { ILocalUser } from "../context/ILocalUser";
 
 const instance = axios.create({
   baseURL: config.url.API_BASE_URL
@@ -18,9 +19,11 @@ const authenticate = (username: string, password: string) => {
   });
 }
 
-const register = (username: string, password: string) => {
+const register = (name: string, username: string, email: string, password: string) => {
   return instance.post('/auth/signup', {
+    name,
     username,
+    email,
     password
   }, {
     headers: {
@@ -29,7 +32,7 @@ const register = (username: string, password: string) => {
   });
 }
 
-const findMe = (user: IUser | null) => {
+const findMe = (user: ILocalUser | null) => {
   if(!user) return Promise.reject('User is null');
 
   return instance.get('/api/users/me', {
@@ -40,8 +43,20 @@ const findMe = (user: IUser | null) => {
   });
 }
 
+const findAllUsers = (user: ILocalUser | null) => {
+  if(!user) return Promise.reject('User is null');
+
+  return instance.get('/api/users', {
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${user.accessToken}`
+    }
+  });
+}
+
 export const connection = {
   authenticate,
   register,
-  findMe
+  findMe,
+  findAllUsers
 }

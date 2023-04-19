@@ -1,13 +1,14 @@
 import { useNavigate } from "react-router-dom";
 
-import { userContext } from "../context/UserContext";
+import { localUserContext } from "../context/LocalUserContext";
 
 import { siteRoutes } from "./SiteRoutes";
+
 import { useEffect } from "react";
 
 const PrivateRoute = ({ children }: any) => {
   const navigate = useNavigate();
-  const { isUserLoggedIn } = userContext();
+  const { isUserLoggedIn } = localUserContext();
 
   useEffect(() => {
     if (!isUserLoggedIn()) {
