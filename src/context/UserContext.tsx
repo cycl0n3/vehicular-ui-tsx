@@ -6,15 +6,15 @@ export interface IUser {
 }
 
 type UserContextType = {
-  user: IUser | undefined;
+  user: IUser | null;
 
-  getUser: () => IUser | undefined;
+  getUser: () => IUser | null;
   isUserLoggedIn: () => boolean;
   setUserLoggedIn: (user: IUser) => void;
   setUserLoggedOut: () => void;
 }
 
-const UserContext = React.createContext<UserContextType | undefined>(undefined);
+const UserContext = React.createContext<UserContextType | null>(null);
 
 const UserProvider = ({ children }: any) => {
   useEffect(() => {
@@ -22,13 +22,13 @@ const UserProvider = ({ children }: any) => {
     setUser(user);
   }, []);
 
-  const [user, setUser] = React.useState<IUser | undefined>(undefined);
+  const [user, setUser] = React.useState<IUser | null>(null);
 
   const getUser = () => {
     try {
       return JSON.parse(localStorage.getItem('user') || '---') as IUser;
     } catch (e) {
-      return undefined;
+      return null;
     }
   }
   
@@ -39,7 +39,7 @@ const UserProvider = ({ children }: any) => {
   
   const setUserLoggedOut = () => {
     localStorage.removeItem('user');
-    setUser(undefined);
+    setUser(null);
   }
 
   const isUserLoggedIn = () => {
@@ -58,7 +58,7 @@ export default  UserContext;
 
 export { UserProvider };
 
-export function userContext() {
+export function userContext(): UserContextType {
   const context = React.useContext(UserContext);
 
   if (!context) {
