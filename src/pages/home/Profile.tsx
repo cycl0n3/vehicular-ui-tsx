@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { notification } from "antd";
+import { notification, Descriptions } from "antd";
 
 import {
   useQuery,
@@ -45,30 +45,14 @@ const Profile = () => {
     <div>
       {contextHolder}
 
-      <h1>Profile</h1>
-
-      {isLoading && <div>Loading...</div>}
-
-      {isError && <div>Error Loading</div>}
-
-      {data && <table>
-        <thead>
-          <tr>
-            <th>Username</th>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Role</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>{data.username}</td>
-            <td>{data.name}</td>
-            <td>{data.email}</td>
-            <td>{data.role}</td>
-          </tr>
-        </tbody>
-      </table>}
+      {data && <Descriptions title="User Info">
+        {isLoading && <Descriptions.Item label="Status">Loading...</Descriptions.Item>}
+        {isError && <Descriptions.Item label="Status">Error</Descriptions.Item>}
+        <Descriptions.Item label="Username">{data.username}</Descriptions.Item>
+        <Descriptions.Item label="Name">{data.name}</Descriptions.Item>
+        <Descriptions.Item label="Email">{data.email}</Descriptions.Item>
+        <Descriptions.Item label="Role">{data.role}</Descriptions.Item>
+      </Descriptions>}
     </div>
   );
 };

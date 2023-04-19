@@ -4,8 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { localUserContext } from "../../context/LocalUserContext";
 import { connection } from "../../components/Connection";
 
-import { notification } from "antd";
-import { Space, Table, Tag } from 'antd';
+import { notification, Descriptions } from "antd";
+import { Table, Tag } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 
 import { nanoid } from 'nanoid';
@@ -99,14 +99,11 @@ const Users = () => {
   return (
     <div>
       {contextHolder}
-
-      <h1>Admin</h1>
       
       <h3>Users List</h3>
-      
-      {isLoading && <div>Loading...</div>}
 
-      {isError && <div>Error Loading</div>}
+      {isLoading && <Descriptions.Item label="Status">Loading...</Descriptions.Item>}
+      {isError && <Descriptions.Item label="Status">Error</Descriptions.Item>}
 
       <Table columns={columns} dataSource={data} />
     </div>
