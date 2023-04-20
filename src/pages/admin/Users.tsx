@@ -6,43 +6,43 @@ import { localUserContext } from "../../context/LocalUserContext";
 import { connection } from "../../components/Connection";
 
 import { notification, Descriptions } from "antd";
-import { Table, Tag } from 'antd';
-import type { ColumnsType } from 'antd/es/table';
+import { Table, Tag } from "antd";
+import type { ColumnsType } from "antd/es/table";
 
-import { nanoid } from 'nanoid';
+import { nanoid } from "nanoid";
 
-import {
-  useQuery,
-  useMutation,
-} from '@tanstack/react-query';
+import { useQuery, useMutation } from "@tanstack/react-query";
 
 import { ADMIN_ROLE } from "../../components/SiteRoutes";
 
 const Users = (): JSX.Element => {
   const navigate: NavigateFunction = useNavigate();
-  
+
   const { getLocalUser } = localUserContext();
-  
+
   type NotificationType = "success" | "info" | "warning" | "error";
-  
+
   const [api, contextHolder] = notification.useNotification();
 
-  const openNotificationWithIcon = (type: NotificationType, error: any): void => {
+  const openNotificationWithIcon = (
+    type: NotificationType,
+    error: any
+  ): void => {
     api[type]({
       message: "Login Failed",
       description: error.message,
     });
   };
 
-  const query = useQuery({ 
+  const query = useQuery({
     queryKey: ["users"],
     queryFn: async () => {
-      const response = await connection.findAllUsers(getLocalUser())
+      const response = await connection.findAllUsers(getLocalUser());
       return response.data.map((user: any) => {
         return {
-          ...user, 
-          key: nanoid()
-        }
+          ...user,
+          key: nanoid(),
+        };
       });
     },
     refetchOnWindowFocus: false,
@@ -51,7 +51,7 @@ const Users = (): JSX.Element => {
       if (error.message) {
         openNotificationWithIcon("error", error);
       }
-    }
+    },
   });
 
   const { isLoading, isError, data } = query;
@@ -66,47 +66,59 @@ const Users = (): JSX.Element => {
 
   const columns: ColumnsType<DataType> = [
     {
-      title: 'Id',
-      dataIndex: 'id',
-      key: 'id',
+      title: "Id",
+      dataIndex: "id",
+      key: "id",
     },
     {
-      title: 'Name',
-      dataIndex: 'name',
-      key: 'name',
+      title: "Name",
+      dataIndex: "name",
+      key: "name",
     },
     {
-      title: 'Username',
-      dataIndex: 'username',
-      key: 'username',
+      title: "Username",
+      dataIndex: "username",
+      key: "username",
     },
     {
-      title: 'Email',
-      dataIndex: 'email',
-      key: 'email',
+      title: "Email",
+      dataIndex: "email",
+      key: "email",
     },
     {
-      title: 'Role',
-      dataIndex: 'role',
-      key: 'role',
+      title: "Role",
+      dataIndex: "role",
+      key: "role",
       render: (role: string) => (
-        <Tag color={role === ADMIN_ROLE ? 'red' : 'green'} key={role}>
+        <Tag color={role === ADMIN_ROLE ? "red" : "green"} key={role}>
           {role}
         </Tag>
       ),
-    }
-  ]
+    },
+  ];
 
   return (
     <div>
       {contextHolder}
-      
-      <h3>Users List</h3>
 
-      {isLoading && <Descriptions.Item label="Status">Loading...</Descriptions.Item>}
-      {isError && <Descriptions.Item label="Status">Error</Descriptions.Item>}
+      {isLoading && (
+        <Descriptions title="User List">
+          <Descriptions.Item label="Status">Loading...</Descriptions.Item>
+        </Descriptions>
+      )}
 
-      <Table columns={columns} dataSource={data} />
+      {isError && (
+        <Descriptions title="User List">
+          <Descriptions.Item label="Status">Error</Descriptions.Item>
+        </Descriptions>
+      )}
+
+      {data && (<>
+        <Descriptions title="User List">
+        </Descriptions>
+        
+        <Table columns={columns} dataSource={data} />
+      </>)}
     </div>
   );
 };

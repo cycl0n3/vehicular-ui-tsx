@@ -7,6 +7,8 @@ import "./index.css";
 
 import { LocalUserProvider } from "./context/LocalUserContext";
 
+document.title = "Vehicular UI";
+
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
     <LocalUserProvider>

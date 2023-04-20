@@ -23,6 +23,7 @@ const LocalUserProvider = ({ children }: any): JSX.Element => {
     try {
       return JSON.parse(localStorage.getItem('user') || '---') as ILocalUser;
     } catch (e) {
+      setUserLoggedOut();
       return null;
     }
   }
