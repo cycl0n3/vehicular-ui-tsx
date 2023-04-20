@@ -72,9 +72,27 @@ const findAllUsers = (
     });
 };
 
+const createOrder = (user: ILocalUser | null, description: string): Promise<AxiosResponse<any, any>> => {
+    if (!user) return Promise.reject("User is null");
+
+    return instance.post(
+        "/api/orders",
+        {
+            description,
+        },
+        {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${user.accessToken}`,
+            },
+        }
+    );
+}
+
 export const connection = {
     authenticate,
     register,
     findMe,
     findAllUsers,
+    createOrder
 };

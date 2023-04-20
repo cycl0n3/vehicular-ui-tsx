@@ -55,15 +55,22 @@ const Users = (): JSX.Element => {
 
     const {isLoading, isError, data} = query;
 
-    interface DataType {
+    interface OrderResponseDataType {
+        id: string;
+        description: string;
+        createdAt: string;
+    }
+
+    interface UserResponseDataType {
         id: number;
         name: string;
         username: string;
         email: string;
         role: string;
+        orders: OrderResponseDataType[];
     }
 
-    const columns: ColumnsType<DataType> = [
+    const columns: ColumnsType<UserResponseDataType> = [
         {
             title: "Id",
             dataIndex: "id",
@@ -83,6 +90,16 @@ const Users = (): JSX.Element => {
             title: "Email",
             dataIndex: "email",
             key: "email",
+        },
+        {
+            title: "Orders",
+            dataIndex: "orders",
+            key: "orders",
+            render: (orders: OrderResponseDataType[]) => (
+                <>
+                    {orders.length > 0 ? `${orders.length} orders` : "No orders"}
+                </>
+            ),
         },
         {
             title: "Role",

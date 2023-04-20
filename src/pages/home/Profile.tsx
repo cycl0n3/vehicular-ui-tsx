@@ -1,6 +1,6 @@
 import React, {useRef, useState} from "react";
 
-import {Button, Checkbox, Descriptions, Form, FormInstance, Input, Modal, notification, Tag, Typography,} from "antd";
+import {Button, Descriptions, Form, FormInstance, Input, Modal, notification, Tag, Typography,} from "antd";
 
 import {useQuery} from "@tanstack/react-query";
 
@@ -20,10 +20,10 @@ const Profile = () => {
 
     type NotificationType = "success" | "info" | "warning" | "error";
 
-    const openNotificationWithIcon = (type: NotificationType, error: any) => {
+    const openNotificationWithIcon = (type: NotificationType, title: any, message: any): void => {
         api[type]({
-            message: "Login Failed",
-            description: error.message,
+            message: title,
+            description: message,
         });
     };
 
@@ -44,7 +44,7 @@ const Profile = () => {
         refetchOnReconnect: true,
         onError: (error: any) => {
             if (error.message) {
-                openNotificationWithIcon("error", error);
+                openNotificationWithIcon("error", "Login Failed", error.message);
             }
         },
     });
@@ -89,16 +89,31 @@ const Profile = () => {
         setConfirmModalLoading(true);
 
         // @ts-ignore
-        modalForm.current.validateFields().then((values) => {
-            setOpenModal(false);
+        modalForm.current.validateFields().then((values: any): void => {
+            // console.log("values", values);
+            connection.createOrder(getLocalUser(), values.description).then(() => {
+                // @ts-ignore
+                modalForm.current.resetFields();
+
+                refetchProfile();
+
+                setOpenModal(false);
+                setConfirmModalLoading(false);
+                openNotificationWithIcon("success", "Order Success", "Order created successfully");
+            }).catch((error: any) => {
+                openNotificationWithIcon("error", "Order Error", error.message);
+            })
+        }).catch((error: any) => {
             setConfirmModalLoading(false);
-        }).catch((error) => {
-            setConfirmModalLoading(false);
+            openNotificationWithIcon("error", "Order Error", error.message);
         });
     };
 
     const handleModalCancel = () => {
+        // @ts-ignore
+        modalForm.current.resetFields();
 
+        setConfirmModalLoading(false);
         setOpenModal(false);
     };
 
