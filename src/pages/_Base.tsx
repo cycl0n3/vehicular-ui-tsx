@@ -6,7 +6,7 @@ import { Avatar } from 'antd';
 import { Layout, Menu, theme } from "antd";
 const { Header, Content, Footer } = Layout;
 
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Outlet, useLocation, useNavigate, NavigateFunction, Location } from "react-router-dom";
 
 import {
   useQuery,
@@ -18,17 +18,17 @@ import { SiteRoute, siteRoutes, GUEST_ROLE } from "../components/SiteRoutes";
 import { localUserContext } from "../context/LocalUserContext";
 import { connection } from "../components/Connection";
 
-const Base = () => {
+const Base = (): JSX.Element => {
   const {
     token: { colorBgContainer },
   } = theme.useToken();
 
-  const navigate = useNavigate();
-  const location = useLocation();
+  const navigate: NavigateFunction = useNavigate();
+  const location: Location = useLocation();
 
   const currentRoute: SiteRoute = siteRoutes.find(route => route.link === location.pathname) || siteRoutes[0];
 
-  const navigateToRoute = (key: string) => {  
+  const navigateToRoute = (key: string): void => {  
     const path = siteRoutes.find(route => route.key === key) || siteRoutes[0];
     navigate(path.link);
   }

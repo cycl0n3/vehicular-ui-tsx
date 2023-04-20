@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 
-import { useLocation, useNavigate } from "react-router-dom";
+import { NavigateFunction, useLocation, useNavigate } from "react-router-dom";
 
 import { Typography } from "antd";
 const { Title } = Typography;
@@ -18,11 +18,11 @@ import { ILocalUser } from "../../context/ILocalUser";
 import { connection } from "../../components/Connection";
 
 
-const SignIn = () => {
-  const onFinishFailed = (errorInfo: ValidateErrorEntity<any>) => {
+const SignIn = (): JSX.Element => {
+  const onFinishFailed = (errorInfo: ValidateErrorEntity<any>): void => {
   };
 
-  const onFinish = (values: any) => {
+  const onFinish = (values: any): void => {
     setLoading(true);
 
     const username = values.email;
@@ -53,7 +53,7 @@ const SignIn = () => {
     setUserLoggedOut();
   }, []);
 
-  const navigate = useNavigate();
+  const navigate: NavigateFunction = useNavigate();
 
   const { setUserLoggedIn, setUserLoggedOut } = localUserContext();
 
@@ -63,7 +63,7 @@ const SignIn = () => {
 
   type NotificationType = 'success' | 'info' | 'warning' | 'error';
 
-  const openNotificationWithIcon = (type: NotificationType) => {
+  const openNotificationWithIcon = (type: NotificationType): void => {
     api[type]({
       message: 'Login Failed',
       description: 'Please check your username and password and try again.',

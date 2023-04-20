@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+
+import { useNavigate, Location, NavigateFunction } from "react-router-dom";
 
 import { localUserContext } from "../../context/LocalUserContext";
 import { connection } from "../../components/Connection";
@@ -17,8 +18,8 @@ import {
 
 import { ADMIN_ROLE } from "../../components/SiteRoutes";
 
-const Users = () => {
-  const navigate = useNavigate();
+const Users = (): JSX.Element => {
+  const navigate: NavigateFunction = useNavigate();
   
   const { getLocalUser } = localUserContext();
   
@@ -26,7 +27,7 @@ const Users = () => {
   
   const [api, contextHolder] = notification.useNotification();
 
-  const openNotificationWithIcon = (type: NotificationType, error: any) => {
+  const openNotificationWithIcon = (type: NotificationType, error: any): void => {
     api[type]({
       message: "Login Failed",
       description: error.message,

@@ -6,7 +6,7 @@ import { siteRoutes } from "./SiteRoutes";
 
 import { useEffect } from "react";
 
-const PrivateRoute = ({ children }: any) => {
+const PrivateRoute = ({ children }: any): any => {
   const navigate = useNavigate();
   const { isUserLoggedIn } = localUserContext();
 

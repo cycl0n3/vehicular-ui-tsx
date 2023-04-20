@@ -16,7 +16,7 @@ import { ILocalUser } from "../../context/ILocalUser";
 
 import { connection } from "../../components/Connection";
 
-const SignUp = () => {
+const SignUp = (): JSX.Element => {
   const onFinish = (values: any) => {
     const name = values.name;
     const username = values.username;
@@ -48,7 +48,7 @@ const SignUp = () => {
     console.log("Success:", values);
   };
 
-  const onFinishFailed = (errorInfo: ValidateErrorEntity<any>) => {
+  const onFinishFailed = (errorInfo: ValidateErrorEntity<any>): void => {
     console.log("Failed:", errorInfo);
   };
 
@@ -68,7 +68,7 @@ const SignUp = () => {
 
   type NotificationType = "success" | "info" | "warning" | "error";
 
-  const openNotificationWithIcon = (type: NotificationType) => {
+  const openNotificationWithIcon = (type: NotificationType): void => {
     api[type]({
       message: "Sign Up Failed",
       description: "Username or email exists. Please try again.",

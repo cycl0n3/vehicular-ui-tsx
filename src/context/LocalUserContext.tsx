@@ -11,7 +11,7 @@ type LocalUserContextType = {
 
 const LocalUserContext = React.createContext<LocalUserContextType | null>(null);
 
-const LocalUserProvider = ({ children }: any) => {
+const LocalUserProvider = ({ children }: any): JSX.Element => {
   useEffect(() => {
     const user = getLocalUser();
     setLocalUser(user);
@@ -19,7 +19,7 @@ const LocalUserProvider = ({ children }: any) => {
 
   const [localUser, setLocalUser] = React.useState<ILocalUser | null>(null);
 
-  const getLocalUser = () => {
+  const getLocalUser = (): ILocalUser | null => {
     try {
       return JSON.parse(localStorage.getItem('user') || '---') as ILocalUser;
     } catch (e) {
@@ -27,17 +27,17 @@ const LocalUserProvider = ({ children }: any) => {
     }
   }
   
-  const setUserLoggedIn = (user: ILocalUser) => {
+  const setUserLoggedIn = (user: ILocalUser): void => {
     localStorage.setItem('user', JSON.stringify(user));
     setLocalUser(user);
   }
   
-  const setUserLoggedOut = () => {
+  const setUserLoggedOut = (): void => {
     localStorage.removeItem('user');
     setLocalUser(null);
   }
 
-  const isUserLoggedIn = () => {
+  const isUserLoggedIn = (): boolean => {
     return !!localStorage.getItem('user');
   }
 

@@ -2,6 +2,7 @@ import React from "react";
 
 import {
   Route,
+  Router,
   createBrowserRouter,
   createRoutesFromElements,
   RouterProvider,
@@ -22,7 +23,7 @@ import { siteRoutes } from "./components/SiteRoutes";
 
 const queryClient = new QueryClient();
 
-const App = () => {
+const App = (): JSX.Element => {
 
   const router = createBrowserRouter(
     createRoutesFromElements(
