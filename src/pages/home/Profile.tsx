@@ -1,6 +1,6 @@
-import React, {useState} from "react";
+import React, {useRef, useState} from "react";
 
-import {Button, Descriptions, Modal, notification, Tag, Typography,} from "antd";
+import {Button, Checkbox, Descriptions, Form, FormInstance, Input, Modal, notification, Tag, Typography,} from "antd";
 
 import {useQuery} from "@tanstack/react-query";
 
@@ -83,17 +83,25 @@ const Profile = () => {
     const [openModal, setOpenModal] = useState(false);
     const [confirmModalLoading, setConfirmModalLoading] = useState(false);
 
+    const modalForm: React.Ref<FormInstance<any>> = useRef({} as FormInstance<any>);
+
     const handleModalOk = () => {
         setConfirmModalLoading(true);
-        setTimeout(() => {
+
+        // @ts-ignore
+        modalForm.current.validateFields().then((values) => {
             setOpenModal(false);
             setConfirmModalLoading(false);
-        }, 2000);
+        }).catch((error) => {
+            setConfirmModalLoading(false);
+        });
     };
 
     const handleModalCancel = () => {
+
         setOpenModal(false);
     };
+
 
     return (
         <div>
@@ -155,7 +163,24 @@ const Profile = () => {
                         confirmLoading={confirmModalLoading}
                         onCancel={handleModalCancel}
                     >
-                        <p>Hello Modal</p>
+                        <Form
+                            ref={modalForm}
+                            name="order-form"
+                            labelCol={{ span: 8 }}
+                            wrapperCol={{ span: 16 }}
+                            style={{ maxWidth: 600 }}
+                            initialValues={{ remember: true }}
+                            // onFinish={onFinish}
+                            autoComplete="off"
+                        >
+                            <Form.Item
+                                label="Order Description"
+                                name="description"
+                                rules={[{ required: true, message: 'Please enter order description' }]}
+                            >
+                                <Input />
+                            </Form.Item>
+                        </Form>
                     </Modal>
                 </>
             )}
