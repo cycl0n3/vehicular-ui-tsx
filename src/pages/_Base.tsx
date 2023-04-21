@@ -7,10 +7,10 @@ import {Location, NavigateFunction, Outlet, useLocation, useNavigate} from "reac
 
 import {useQuery,} from '@tanstack/react-query';
 
-import {GUEST_ROLE, SiteRoute, siteRoutes} from "../components/SiteRoutes";
+import {GUEST_ROLE, SiteRoute, siteRoutes} from "../base/SiteRoutes";
 
 import {localUserContext} from "../context/LocalUserContext";
-import {connection} from "../components/Connection";
+import {connection} from "../base/Connection";
 
 import {AxiosResponse} from "axios";
 

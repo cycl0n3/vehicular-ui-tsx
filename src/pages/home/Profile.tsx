@@ -5,12 +5,13 @@ import {Button, Descriptions, Form, FormInstance, Input, Modal, notification, Ta
 import {useQuery} from "@tanstack/react-query";
 
 import {localUserContext} from "../../context/LocalUserContext";
-import {connection} from "../../components/Connection";
+import {connection} from "../../base/Connection";
 
-import {ADMIN_ROLE} from "../../components/SiteRoutes";
+import {ADMIN_ROLE} from "../../base/SiteRoutes";
 
 import Table, {ColumnsType} from "antd/es/table";
 import {PlusCircleTwoTone} from "@ant-design/icons";
+
 import {AxiosResponse} from "axios";
 
 const Profile = () => {

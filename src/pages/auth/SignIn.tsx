@@ -10,7 +10,7 @@ import {localUserContext} from "../../context/LocalUserContext";
 
 import {ILocalUser} from "../../context/ILocalUser";
 
-import {connection} from "../../components/Connection";
+import {connection} from "../../base/Connection";
 
 const {Title} = Typography;
 

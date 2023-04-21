@@ -3,7 +3,7 @@ import React from "react";
 import {NavigateFunction, useNavigate} from "react-router-dom";
 
 import {localUserContext} from "../../context/LocalUserContext";
-import {connection} from "../../components/Connection";
+import {connection} from "../../base/Connection";
 
 import {Descriptions, notification, Table, Tag} from "antd";
 import type {ColumnsType} from "antd/es/table";
@@ -12,7 +12,7 @@ import {nanoid} from "nanoid";
 
 import {useQuery} from "@tanstack/react-query";
 
-import {ADMIN_ROLE} from "../../components/SiteRoutes";
+import {ADMIN_ROLE} from "../../base/SiteRoutes";
 
 const Users = (): JSX.Element => {
     const navigate: NavigateFunction = useNavigate();

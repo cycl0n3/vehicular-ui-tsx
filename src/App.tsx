@@ -19,7 +19,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 import Base from "./pages/_Base";
 
-import { siteRoutes } from "./components/SiteRoutes";
+import { siteRoutes } from "./base/SiteRoutes";
 
 const queryClient = new QueryClient();
 
