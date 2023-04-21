@@ -1,6 +1,6 @@
 import React, {useRef, useState, useContext} from "react";
 
-import {Button, Descriptions, Form, FormInstance, Input, Modal, notification, Tag, Typography,} from "antd";
+import {Button, Descriptions, Form, FormInstance, Input, Modal, Tag, Typography,} from "antd";
 
 import {useQuery} from "@tanstack/react-query";
 
@@ -13,6 +13,7 @@ import Table, {ColumnsType} from "antd/es/table";
 import {PlusCircleTwoTone} from "@ant-design/icons";
 
 import {AxiosResponse} from "axios";
+
 import NotificationContext from "../../context/NotificationContext";
 
 const Profile = () => {
@@ -80,7 +81,7 @@ const Profile = () => {
     const [openModal, setOpenModal] = useState(false);
     const [confirmModalLoading, setConfirmModalLoading] = useState(false);
 
-    const modalForm: React.Ref<FormInstance<any>> = useRef({} as FormInstance<any>);
+    const modalForm = useRef({} as FormInstance<any>);
 
     const handleModalOk = () => {
         setConfirmModalLoading(true);
