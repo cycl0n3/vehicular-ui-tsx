@@ -89,10 +89,25 @@ const createOrder = (user: ILocalUser | null, description: string): Promise<Axio
     );
 }
 
+const uploadProfilePicture = (user: ILocalUser | null, file: File): Promise<AxiosResponse<any, any>> => {
+    if (!user) return Promise.reject("User is null");
+
+    const formData = new FormData();
+    formData.append("profile-picture", file);
+
+    return instance.post("/api/users/profile-picture", formData, {
+        headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${user.accessToken}`,
+        },
+    });
+}
+
 export const connection = {
     authenticate,
     register,
     findMe,
     findAllUsers,
-    createOrder
+    createOrder,
+    uploadProfilePicture
 };

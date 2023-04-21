@@ -51,7 +51,7 @@ const Profile = () => {
         isLoading: isProfileLoading,
         isError: isProfileError,
         data: profileData,
-        refetch: refetchProfile,
+        refetch: reFetchProfile,
     } = profileQuery;
 
     interface DataType {
@@ -90,10 +90,8 @@ const Profile = () => {
             connection.createOrder(getLocalUser(), values.description).then(() => {
                 // @ts-ignore
                 orderDialogForm.current.resetFields();
-
-                refetchProfile();
+                reFetchProfile();
                 setOrderDialogOpen(false);
-
                 notificationContext.displayNotification("success", "Order Success", "Order created successfully");
             }).catch((error: any) => {
                 notificationContext.displayNotification("error", "Order Error", error.message);

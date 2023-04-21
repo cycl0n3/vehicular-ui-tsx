@@ -13,6 +13,7 @@ import LocalUserContext from "../context/LocalUserContext";
 import {connection} from "../base/Connection";
 
 import {AxiosResponse} from "axios";
+import NotificationContext from "../context/NotificationContext";
 
 const {Header, Content, Footer} = Layout;
 
@@ -20,6 +21,8 @@ const Base = (): JSX.Element => {
     const {
         token: {colorBgContainer},
     } = theme.useToken();
+
+    const notificationContext = useContext(NotificationContext);
 
     const [loading, setLoading] = useState<boolean>(true);
 
@@ -46,33 +49,48 @@ const Base = (): JSX.Element => {
     const query = useQuery({
         queryKey: ["me"],
         queryFn: async (): Promise<any> => {
-          try {
-            const response: AxiosResponse<any, any> = await connection.findMe(getLocalUser());
-            const data = response.data;
-            setSitesRoutesFiltered(siteRoutes.filter((route: SiteRoute) => {
-                return route.roles.includes(data.role);
-            }));
-            return response.data;
-          } catch (e) {
-            return { };
-          } finally {
-            setLoading(false);
-          }
+            try {
+                const response: AxiosResponse<any, any> = await connection.findMe(getLocalUser());
+                const data = response.data;
+                setSitesRoutesFiltered(siteRoutes.filter((route: SiteRoute) => {
+                    return route.roles.includes(data.role);
+                }));
+                return response.data;
+            } catch (e) {
+                return {};
+            } finally {
+                setLoading(false);
+            }
         },
         refetchOnWindowFocus: false,
         refetchOnReconnect: true,
     });
 
+    const {data} = query;
+
+    const [file, setFile] = useState<File>();
     const [fileUploadDialogOpen, setFileUploadDialogOpen] = useState(false);
     const [fileUploadDialogConfirmLoading, setFileUploadDialogConfirmLoading] = useState(false);
     const fileUploadDialogForm = useRef({} as FormInstance<any>);
 
     const fileUploadOK = (): void => {
+        if (!file) {
+            notificationContext.displayNotification("error", "Error", "Please select a file to upload.");
+            return;
+        }
+
         setFileUploadDialogConfirmLoading(true);
-        setTimeout(() => {
+
+        connection.uploadProfilePicture(getLocalUser(), file).then((response: AxiosResponse<any, any>) => {
+            notificationContext.displayNotification("success", "Success", "Profile picture uploaded successfully.");
             setFileUploadDialogOpen(false);
+            query.refetch();
+        }).catch(() => {
+            setFileUploadDialogOpen(false);
+            notificationContext.displayNotification("error", "Error", "Error uploading profile picture.");
+        }).finally(() => {
             setFileUploadDialogConfirmLoading(false);
-        }, 2000);
+        });
     }
 
     const fileUploadCancel = (): void => {
@@ -91,11 +109,31 @@ const Base = (): JSX.Element => {
                         background: "#001529",
                     }}
                 >
-                    <Avatar size="large" icon={<UserOutlined/>} onClick={
-                        () => {
-                            setFileUploadDialogOpen(true);
-                        }
-                    }/>
+                    {getLocalUser() && (data && data.profilePicture) &&
+                        <Avatar size="large"
+                                style={{"cursor": "pointer"}}
+                                src={`data:image/jpg;base64,${data.profilePicture}`}
+                                onClick={
+                                    (): void => {
+                                        setFileUploadDialogOpen(true);
+                                    }
+                                }/>}
+
+                    {getLocalUser() && (!data || !data.profilePicture) &&
+                        <Avatar size="large"
+                                style={{"cursor": "pointer"}}
+                                icon={<UserOutlined/>}
+                                onClick={
+                                    (): void => {
+                                        setFileUploadDialogOpen(true);
+                                    }
+                                }/>}
+
+                    {!getLocalUser() &&
+                        <Avatar size="large"
+                                style={{"cursor": "default"}}
+                                icon={<UserOutlined/>}
+                        />}
                 </div>
 
                 <Menu
@@ -110,7 +148,7 @@ const Base = (): JSX.Element => {
                             navigateToRoute(key as string);
                         }
                     }
-                    items={sitesRoutesFiltered.map(route => {
+                    items={sitesRoutesFiltered.map((route: SiteRoute) => {
                         return {
                             key: route.key,
                             label: route.label,
@@ -137,18 +175,24 @@ const Base = (): JSX.Element => {
                 <Form
                     ref={fileUploadDialogForm}
                     name="profile-pic-form"
-                    labelCol={{ span: 8 }}
-                    wrapperCol={{ span: 16 }}
-                    style={{ maxWidth: 600 }}
-                    initialValues={{ remember: true }}
+                    labelCol={{span: 8}}
+                    wrapperCol={{span: 16}}
+                    style={{maxWidth: 600}}
+                    initialValues={{remember: true}}
                     autoComplete="off"
                 >
                     <Form.Item
                         label="Select profile picture"
-                        name="profilePicture"
-                        rules={[{ required: true, message: 'Please enter order description' }]}
+                        name="profile-picture"
+                        rules={[{required: true, message: 'Please choose a profile picture'}]}
                     >
-                        <Input type="file" />
+                        <Input type="file" onChange={
+                            (e): void => {
+                                if (e.target.files && e.target.files.length > 0) {
+                                    setFile(e.target.files[0]);
+                                }
+                            }
+                        }/>
                     </Form.Item>
                 </Form>
             </Modal>
