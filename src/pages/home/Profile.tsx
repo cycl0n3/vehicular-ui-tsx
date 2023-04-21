@@ -78,41 +78,41 @@ const Profile = () => {
         },
     ];
 
-    const [openModal, setOpenModal] = useState(false);
-    const [confirmModalLoading, setConfirmModalLoading] = useState(false);
+    const [orderDialogOpen, setOrderDialogOpen] = useState(false);
+    const [orderDialogConfirmLoading, setOrderDialogConfirmLoading] = useState(false);
+    const orderDialogForm = useRef({} as FormInstance<any>);
 
-    const modalForm = useRef({} as FormInstance<any>);
-
-    const handleModalOk = () => {
-        setConfirmModalLoading(true);
+    const handleOrderDialogOk = () => {
+        setOrderDialogConfirmLoading(true);
 
         // @ts-ignore
-        modalForm.current.validateFields().then((values: any): void => {
+        orderDialogForm.current.validateFields().then((values: any): void => {
             connection.createOrder(getLocalUser(), values.description).then(() => {
                 // @ts-ignore
-                modalForm.current.resetFields();
+                orderDialogForm.current.resetFields();
 
                 refetchProfile();
+                setOrderDialogOpen(false);
 
-                setOpenModal(false);
-                setConfirmModalLoading(false);
                 notificationContext.displayNotification("success", "Order Success", "Order created successfully");
             }).catch((error: any) => {
                 notificationContext.displayNotification("error", "Order Error", error.message);
-                setConfirmModalLoading(false);
-            })
+            }).finally(() => {
+                setOrderDialogConfirmLoading(false);
+            });
         }).catch((error: any) => {
-            setConfirmModalLoading(false);
             notificationContext.displayNotification("error", "Order Error", error.message);
+        }).finally(() => {
+            setOrderDialogConfirmLoading(false);
         });
     };
 
-    const handleModalCancel = () => {
+    const handleOrderDialogCancel = () => {
         // @ts-ignore
-        modalForm.current.resetFields();
+        orderDialogForm.current.resetFields();
 
-        setConfirmModalLoading(false);
-        setOpenModal(false);
+        setOrderDialogConfirmLoading(false);
+        setOrderDialogOpen(false);
     };
 
 
@@ -160,7 +160,7 @@ const Profile = () => {
                             icon={<PlusCircleTwoTone size={25}/>}
                             size="large"
                             onClick={() => {
-                                setOpenModal(true);
+                                setOrderDialogOpen(true);
                             }}
                         />
                     </Typography.Title>
@@ -169,13 +169,13 @@ const Profile = () => {
 
                     <Modal
                         title="Add new order"
-                        open={openModal}
-                        onOk={handleModalOk}
-                        confirmLoading={confirmModalLoading}
-                        onCancel={handleModalCancel}
+                        open={orderDialogOpen}
+                        onOk={handleOrderDialogOk}
+                        confirmLoading={orderDialogConfirmLoading}
+                        onCancel={handleOrderDialogCancel}
                     >
                         <Form
-                            ref={modalForm}
+                            ref={orderDialogForm}
                             name="order-form"
                             labelCol={{ span: 8 }}
                             wrapperCol={{ span: 16 }}

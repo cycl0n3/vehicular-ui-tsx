@@ -1,7 +1,7 @@
-import React, {useContext, useEffect, useState} from "react";
+import React, {useContext, useEffect, useRef, useState} from "react";
 
 import {UserOutlined} from '@ant-design/icons';
-import {Avatar, Layout, Menu, theme} from 'antd';
+import {Avatar, Form, FormInstance, Input, Layout, Menu, Modal, theme} from 'antd';
 
 import {Location, NavigateFunction, Outlet, useLocation, useNavigate} from "react-router-dom";
 
@@ -63,6 +63,22 @@ const Base = (): JSX.Element => {
         refetchOnReconnect: true,
     });
 
+    const [fileUploadDialogOpen, setFileUploadDialogOpen] = useState(false);
+    const [fileUploadDialogConfirmLoading, setFileUploadDialogConfirmLoading] = useState(false);
+    const fileUploadDialogForm = useRef({} as FormInstance<any>);
+
+    const fileUploadOK = (): void => {
+        setFileUploadDialogConfirmLoading(true);
+        setTimeout(() => {
+            setFileUploadDialogOpen(false);
+            setFileUploadDialogConfirmLoading(false);
+        }, 2000);
+    }
+
+    const fileUploadCancel = (): void => {
+        setFileUploadDialogOpen(false);
+    }
+
     return (
         <Layout>
             <Header style={{position: "sticky", top: 0, zIndex: 1, width: "100%"}}>
@@ -75,7 +91,11 @@ const Base = (): JSX.Element => {
                         background: "#001529",
                     }}
                 >
-                    <Avatar size="large" icon={<UserOutlined/>}/>
+                    <Avatar size="large" icon={<UserOutlined/>} onClick={
+                        () => {
+                            setFileUploadDialogOpen(true);
+                        }
+                    }/>
                 </div>
 
                 <Menu
@@ -107,9 +127,36 @@ const Base = (): JSX.Element => {
                 </div>
             </Content>
 
+            <Modal
+                title="Upload profile picture"
+                open={fileUploadDialogOpen}
+                onOk={fileUploadOK}
+                confirmLoading={fileUploadDialogConfirmLoading}
+                onCancel={fileUploadCancel}
+            >
+                <Form
+                    ref={fileUploadDialogForm}
+                    name="profile-pic-form"
+                    labelCol={{ span: 8 }}
+                    wrapperCol={{ span: 16 }}
+                    style={{ maxWidth: 600 }}
+                    initialValues={{ remember: true }}
+                    autoComplete="off"
+                >
+                    <Form.Item
+                        label="Select profile picture"
+                        name="profilePicture"
+                        rules={[{ required: true, message: 'Please enter order description' }]}
+                    >
+                        <Input type="file" />
+                    </Form.Item>
+                </Form>
+            </Modal>
+
             <Footer style={{textAlign: "center"}}>
                 Ant Design ©2023 Created by Ant UED
             </Footer>
+
         </Layout>
     );
 };
