@@ -9,9 +9,9 @@ type LocalUserContextType = {
     setUserLoggedOut: () => void;
 }
 
-const LocalUserContext = React.createContext<LocalUserContextType | null>(null);
+const LocalUserContext = React.createContext<LocalUserContextType>({} as LocalUserContextType);
 
-const LocalUserProvider = ({children}: any): JSX.Element => {
+const LocalUserContextProvider = ({children}: any): JSX.Element => {
     useEffect(() => {
         const user = getLocalUser();
         setLocalUser(user);
@@ -52,9 +52,9 @@ const LocalUserProvider = ({children}: any): JSX.Element => {
 
 export default LocalUserContext;
 
-export {LocalUserProvider};
+export {LocalUserContextProvider};
 
-export function localUserContext(): LocalUserContextType {
+/*export function localUserContext(): LocalUserContextType {
     const context = React.useContext(LocalUserContext);
 
     if (!context) {
@@ -62,4 +62,4 @@ export function localUserContext(): LocalUserContextType {
     }
 
     return context;
-}
+}*/

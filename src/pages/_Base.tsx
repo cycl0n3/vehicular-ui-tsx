@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 
 import {UserOutlined} from '@ant-design/icons';
 import {Avatar, Layout, Menu, theme} from 'antd';
@@ -9,7 +9,7 @@ import {useQuery,} from '@tanstack/react-query';
 
 import {GUEST_ROLE, SiteRoute, siteRoutes} from "../base/SiteRoutes";
 
-import {localUserContext} from "../context/LocalUserContext";
+import LocalUserContext from "../context/LocalUserContext";
 import {connection} from "../base/Connection";
 
 import {AxiosResponse} from "axios";
@@ -20,6 +20,8 @@ const Base = (): JSX.Element => {
     const {
         token: {colorBgContainer},
     } = theme.useToken();
+
+    const [loading, setLoading] = useState<boolean>(true);
 
     const navigate: NavigateFunction = useNavigate();
     const location: Location = useLocation();
@@ -33,7 +35,7 @@ const Base = (): JSX.Element => {
 
     const [sitesRoutesFiltered, setSitesRoutesFiltered] = useState<SiteRoute[]>([]);
 
-    const {getLocalUser} = localUserContext();
+    const {getLocalUser} = useContext(LocalUserContext);
 
     useEffect(() => {
         setSitesRoutesFiltered(siteRoutes.filter((route: SiteRoute) => {
@@ -44,12 +46,18 @@ const Base = (): JSX.Element => {
     const query = useQuery({
         queryKey: ["me"],
         queryFn: async (): Promise<any> => {
+          try {
             const response: AxiosResponse<any, any> = await connection.findMe(getLocalUser());
             const data = response.data;
             setSitesRoutesFiltered(siteRoutes.filter((route: SiteRoute) => {
                 return route.roles.includes(data.role);
             }));
             return response.data;
+          } catch (e) {
+            return { };
+          } finally {
+            setLoading(false);
+          }
         },
         refetchOnWindowFocus: false,
         refetchOnReconnect: true,
@@ -74,7 +82,9 @@ const Base = (): JSX.Element => {
                     id="menu"
                     theme="dark"
                     mode="horizontal"
+                    disabled={loading}
                     defaultSelectedKeys={[currentRoute.key]}
+
                     onSelect={
                         ({key}) => {
                             navigateToRoute(key as string);

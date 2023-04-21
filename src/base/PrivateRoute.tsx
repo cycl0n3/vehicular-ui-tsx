@@ -1,17 +1,18 @@
 import {useNavigate} from "react-router-dom";
 
-import {localUserContext} from "../context/LocalUserContext";
+import LocalUserContext from "../context/LocalUserContext";
 
 import {siteRoutes} from "./SiteRoutes";
 
-import {useEffect} from "react";
+import {useContext, useEffect} from "react";
 
 const PrivateRoute = ({children}: any): any => {
     const navigate = useNavigate();
-    const {isUserLoggedIn} = localUserContext();
+
+    const localUserContext = useContext(LocalUserContext);
 
     useEffect(() => {
-        if (!isUserLoggedIn()) {
+        if (!localUserContext.isUserLoggedIn()) {
             const url = siteRoutes.find(route => route.key === "sign-in")?.link || "/";
             navigate(url);
             window.location.reload();

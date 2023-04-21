@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, {useContext, useEffect} from "react";
 
 import {Button, Form, Input, notification, Spin, Typography} from "antd";
 
@@ -6,11 +6,12 @@ import {ValidateErrorEntity} from "rc-field-form/lib/interface";
 
 import {useNavigate} from "react-router-dom";
 
-import {localUserContext} from "../../context/LocalUserContext";
+import LocalUserContext from "../../context/LocalUserContext";
 
 import {ILocalUser} from "../../context/ILocalUser";
 
 import {connection} from "../../base/Connection";
+import NotificationContext from "../../context/NotificationContext";
 
 const {Title} = Typography;
 
@@ -40,7 +41,7 @@ const SignUp = (): JSX.Element => {
             })
             .catch(error => {
                 setLoading(false);
-                openNotificationWithIcon('error');
+                notificationContext.displayNotification("error", "Sign Up Failed", error.message);
             })
 
         console.log("Success:", values);
@@ -58,25 +59,14 @@ const SignUp = (): JSX.Element => {
 
     const navigate = useNavigate();
 
-    const {setUserLoggedIn, setUserLoggedOut} = localUserContext();
+    const {setUserLoggedIn, setUserLoggedOut} = useContext(LocalUserContext);
 
     const [loading, setLoading] = React.useState(false);
 
-    const [api, contextHolder] = notification.useNotification();
-
-    type NotificationType = "success" | "info" | "warning" | "error";
-
-    const openNotificationWithIcon = (type: NotificationType): void => {
-        api[type]({
-            message: "Sign Up Failed",
-            description: "Username or email exists. Please try again.",
-        });
-    };
+    const notificationContext= useContext(NotificationContext);
 
     return (
         <div className="sign-in">
-            {contextHolder}
-
             <Title level={3}>Sign In</Title>
 
             <Form
@@ -192,14 +182,6 @@ const SignUp = (): JSX.Element => {
                 >
                     <Input.Password/>
                 </Form.Item>
-
-                {/* <Form.Item
-          name="remember"
-          valuePropName="checked"
-          wrapperCol={{ offset: 8, span: 8 }}
-        >
-          <Checkbox>Remember me</Checkbox>
-        </Form.Item> */}
 
                 <Form.Item wrapperCol={{offset: 8, span: 8}}>
                     {!loading && <Button type="primary" htmlType="submit">

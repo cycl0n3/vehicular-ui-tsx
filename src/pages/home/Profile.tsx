@@ -1,10 +1,10 @@
-import React, {useRef, useState} from "react";
+import React, {useRef, useState, useContext} from "react";
 
 import {Button, Descriptions, Form, FormInstance, Input, Modal, notification, Tag, Typography,} from "antd";
 
 import {useQuery} from "@tanstack/react-query";
 
-import {localUserContext} from "../../context/LocalUserContext";
+import LocalUserContext from "../../context/LocalUserContext";
 import {connection} from "../../base/Connection";
 
 import {ADMIN_ROLE} from "../../base/SiteRoutes";
@@ -13,39 +13,35 @@ import Table, {ColumnsType} from "antd/es/table";
 import {PlusCircleTwoTone} from "@ant-design/icons";
 
 import {AxiosResponse} from "axios";
+import NotificationContext from "../../context/NotificationContext";
 
 const Profile = () => {
-    const {getLocalUser} = localUserContext();
+    const {getLocalUser} = useContext(LocalUserContext);
 
-    const [api, contextHolder] = notification.useNotification();
-
-    type NotificationType = "success" | "info" | "warning" | "error";
-
-    const openNotificationWithIcon = (type: NotificationType, title: any, message: any): void => {
-        api[type]({
-            message: title,
-            description: message,
-        });
-    };
+    const notificationContext= useContext(NotificationContext);
 
     const profileQuery = useQuery({
         queryKey: ["profile"],
         queryFn: async (): Promise<any> => {
-            const response: AxiosResponse<any, any> = await connection.findMe(getLocalUser());
-            const data = response.data;
-            data.orders = data.orders.map((order: any) => {
-                return {
-                    ...order,
-                    key: order.id,
-                };
-            });
-            return data;
+            try {
+                const response: AxiosResponse<any, any> = await connection.findMe(getLocalUser());
+                const data = response.data;
+                data.orders = data.orders.map((order: any) => {
+                    return {
+                        ...order,
+                        key: order.id,
+                    };
+                });
+                return data;
+            } catch (e) {
+                return [];
+            }
         },
         refetchOnWindowFocus: false,
         refetchOnReconnect: true,
         onError: (error: any) => {
             if (error.message) {
-                openNotificationWithIcon("error", "Login Failed", error.message);
+                notificationContext.displayNotification("error", "Login Failed", error.message);
             }
         },
     });
@@ -91,7 +87,6 @@ const Profile = () => {
 
         // @ts-ignore
         modalForm.current.validateFields().then((values: any): void => {
-            // console.log("values", values);
             connection.createOrder(getLocalUser(), values.description).then(() => {
                 // @ts-ignore
                 modalForm.current.resetFields();
@@ -100,13 +95,14 @@ const Profile = () => {
 
                 setOpenModal(false);
                 setConfirmModalLoading(false);
-                openNotificationWithIcon("success", "Order Success", "Order created successfully");
+                notificationContext.displayNotification("success", "Order Success", "Order created successfully");
             }).catch((error: any) => {
-                openNotificationWithIcon("error", "Order Error", error.message);
+                notificationContext.displayNotification("error", "Order Error", error.message);
+                setConfirmModalLoading(false);
             })
         }).catch((error: any) => {
             setConfirmModalLoading(false);
-            openNotificationWithIcon("error", "Order Error", error.message);
+            notificationContext.displayNotification("error", "Order Error", error.message);
         });
     };
 
@@ -121,8 +117,6 @@ const Profile = () => {
 
     return (
         <div>
-            {contextHolder}
-
             {isProfileLoading && (
                 <Descriptions title="User Info">
                     <Descriptions.Item label="Status">Loading...</Descriptions.Item>

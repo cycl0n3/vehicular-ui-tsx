@@ -1,11 +1,12 @@
-import {useEffect} from "react";
+import {useContext, useEffect} from "react";
 import {NavigateFunction, useNavigate} from "react-router-dom";
 
-import {localUserContext} from "../../context/LocalUserContext";
+import LocalUserContext from "../../context/LocalUserContext";
 
 const SignOut = (): null => {
     const navigate: NavigateFunction = useNavigate();
-    const {setUserLoggedOut} = localUserContext();
+
+    const {setUserLoggedOut} = useContext(LocalUserContext);
 
     useEffect(() => {
         setUserLoggedOut();

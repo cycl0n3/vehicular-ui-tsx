@@ -1,8 +1,8 @@
-import React from "react";
+import React, {useContext} from "react";
 
 import {NavigateFunction, useNavigate} from "react-router-dom";
 
-import {localUserContext} from "../../context/LocalUserContext";
+import LocalUserContext from "../../context/LocalUserContext";
 import {connection} from "../../base/Connection";
 
 import {Descriptions, notification, Table, Tag} from "antd";
@@ -17,7 +17,7 @@ import {ADMIN_ROLE} from "../../base/SiteRoutes";
 const Users = (): JSX.Element => {
     const navigate: NavigateFunction = useNavigate();
 
-    const {getLocalUser} = localUserContext();
+    const {getLocalUser} = useContext(LocalUserContext);
 
     type NotificationType = "success" | "info" | "warning" | "error";
 
@@ -36,13 +36,17 @@ const Users = (): JSX.Element => {
     const query = useQuery({
         queryKey: ["users"],
         queryFn: async () => {
-            const response = await connection.findAllUsers(getLocalUser());
-            return response.data.map((user: any) => {
-                return {
-                    ...user,
-                    key: nanoid(),
-                };
-            });
+            try {
+                const response = await connection.findAllUsers(getLocalUser());
+                return response.data.map((user: any) => {
+                    return {
+                        ...user,
+                        key: nanoid(),
+                    };
+                });
+            } catch (e) {
+                return [];
+            }
         },
         refetchOnWindowFocus: false,
         refetchOnReconnect: true,
@@ -97,7 +101,9 @@ const Users = (): JSX.Element => {
             key: "orders",
             render: (orders: OrderResponseDataType[]) => (
                 <>
-                    {orders.length > 0 ? `${orders.length} orders` : "No orders"}
+                    {orders.length > 0
+                        ? (<Tag color="gold" key="many-orders">{orders.length} Orders</Tag>)
+                        : (<Tag color="lightgray" key="no-orders">{orders.length} Orders</Tag> )}
                 </>
             ),
         },
