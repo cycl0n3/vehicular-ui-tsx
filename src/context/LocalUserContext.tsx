@@ -53,13 +53,3 @@ const LocalUserContextProvider = ({children}: any): JSX.Element => {
 export default LocalUserContext;
 
 export {LocalUserContextProvider};
-
-/*export function localUserContext(): LocalUserContextType {
-    const context = React.useContext(LocalUserContext);
-
-    if (!context) {
-        throw new Error('localUserContext must be used within a LocalUserContext');
-    }
-
-    return context;
-}*/
