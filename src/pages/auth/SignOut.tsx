@@ -11,7 +11,7 @@ const SignOut = (): null => {
     useEffect(() => {
         setUserLoggedOut();
         navigate("/");
-        window.location.reload();
+        // window.location.reload();
     }, []);
 
     return null;

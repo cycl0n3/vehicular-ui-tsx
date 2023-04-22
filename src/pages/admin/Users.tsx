@@ -17,7 +17,7 @@ import {ADMIN_ROLE} from "../../base/SiteRoutes";
 const Users = (): JSX.Element => {
     const navigate: NavigateFunction = useNavigate();
 
-    const {getLocalUser} = useContext(LocalUserContext);
+    const {localUser} = useContext(LocalUserContext);
 
     type NotificationType = "success" | "info" | "warning" | "error";
 
@@ -37,7 +37,7 @@ const Users = (): JSX.Element => {
         queryKey: ["users"],
         queryFn: async () => {
             try {
-                const response = await connection.findAllUsers(getLocalUser());
+                const response = await connection.findAllUsers(localUser);
                 return response.data.map((user: any) => {
                     return {
                         ...user,

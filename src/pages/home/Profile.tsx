@@ -17,7 +17,7 @@ import {AxiosResponse} from "axios";
 import NotificationContext from "../../context/NotificationContext";
 
 const Profile = () => {
-    const {getLocalUser} = useContext(LocalUserContext);
+    const {localUser} = useContext(LocalUserContext);
 
     const notificationContext= useContext(NotificationContext);
 
@@ -25,7 +25,7 @@ const Profile = () => {
         queryKey: ["profile"],
         queryFn: async (): Promise<any> => {
             try {
-                const response: AxiosResponse<any, any> = await connection.findMe(getLocalUser());
+                const response: AxiosResponse<any, any> = await connection.findMe(localUser);
                 const data = response.data;
                 data.orders = data.orders.map((order: any) => {
                     return {
@@ -87,7 +87,7 @@ const Profile = () => {
 
         // @ts-ignore
         orderDialogForm.current.validateFields().then((values: any): void => {
-            connection.createOrder(getLocalUser(), values.description).then(() => {
+            connection.createOrder(localUser, values.description).then(() => {
                 // @ts-ignore
                 orderDialogForm.current.resetFields();
                 reFetchProfile();

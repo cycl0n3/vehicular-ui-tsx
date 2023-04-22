@@ -3,7 +3,8 @@ import React, {useEffect} from 'react';
 import {ILocalUser} from './ILocalUser';
 
 type LocalUserContextType = {
-    getLocalUser: () => ILocalUser | null;
+    localUser: ILocalUser | null;
+    // getLocalUser: () => ILocalUser | null;
     isUserLoggedIn: () => boolean;
     setUserLoggedIn: (user: ILocalUser) => void;
     setUserLoggedOut: () => void;
@@ -44,7 +45,7 @@ const LocalUserContextProvider = ({children}: any): JSX.Element => {
 
     return (
         <LocalUserContext.Provider
-            value={{getLocalUser, isUserLoggedIn, setUserLoggedIn, setUserLoggedOut}}>
+            value={{localUser, /*getLocalUser,*/ isUserLoggedIn, setUserLoggedIn, setUserLoggedOut}}>
             {children}
         </LocalUserContext.Provider>
     )

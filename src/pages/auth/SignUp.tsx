@@ -36,7 +36,7 @@ const SignUp = (): JSX.Element => {
                     setUserLoggedIn(user);
 
                     navigate("/profile");
-                    window.location.reload();
+                    // window.location.reload();
                 }
             })
             .catch(error => {

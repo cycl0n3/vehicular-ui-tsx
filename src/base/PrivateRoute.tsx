@@ -15,7 +15,7 @@ const PrivateRoute = ({children}: any): any => {
         if (!localUserContext.isUserLoggedIn()) {
             const url = siteRoutes.find(route => route.key === "sign-in")?.link || "/";
             navigate(url);
-            window.location.reload();
+            // window.location.reload();
         }
     }, []);
 

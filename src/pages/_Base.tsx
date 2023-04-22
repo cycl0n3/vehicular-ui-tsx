@@ -14,6 +14,7 @@ import {connection} from "../base/Connection";
 
 import {AxiosResponse} from "axios";
 import NotificationContext from "../context/NotificationContext";
+import {ILocalUser} from "../context/ILocalUser";
 
 const {Header, Content, Footer} = Layout;
 
@@ -22,6 +23,8 @@ const Base = (): JSX.Element => {
         token: {colorBgContainer},
     } = theme.useToken();
 
+    const {localUser} = useContext(LocalUserContext);
+
     const notificationContext = useContext(NotificationContext);
 
     const [loading, setLoading] = useState<boolean>(true);
@@ -29,16 +32,17 @@ const Base = (): JSX.Element => {
     const navigate: NavigateFunction = useNavigate();
     const location: Location = useLocation();
 
-    const currentRoute: SiteRoute = siteRoutes.find((route: SiteRoute): boolean => route.link === location.pathname) || siteRoutes[0];
+    const pageRoute: SiteRoute = siteRoutes.find((route: SiteRoute): boolean => route.link === location.pathname) || siteRoutes[0];
+    // const [currentRoute, setCurrentRoute] = useState<SiteRoute>(pageRoute);
 
     const navigateToRoute = (key: string): void => {
         const path: SiteRoute = siteRoutes.find(route => route.key === key) || siteRoutes[0];
+        // setCurrentRoute(path);
         navigate(path.link);
     }
 
     const [sitesRoutesFiltered, setSitesRoutesFiltered] = useState<SiteRoute[]>([]);
 
-    const {getLocalUser} = useContext(LocalUserContext);
 
     useEffect(() => {
         setSitesRoutesFiltered(siteRoutes.filter((route: SiteRoute) => {
@@ -46,15 +50,27 @@ const Base = (): JSX.Element => {
         }));
     }, []);
 
+    useEffect(() => {
+        if (localUser) {
+            refetch();
+        } else {
+            setSitesRoutesFiltered(siteRoutes.filter((route: SiteRoute) => {
+                return route.roles.includes(GUEST_ROLE);
+            }));
+        }
+    }, [localUser]);
+
     const query = useQuery({
-        queryKey: ["me"],
+        queryKey: ["me", localUser],
         queryFn: async (): Promise<any> => {
             try {
-                const response: AxiosResponse<any, any> = await connection.findMe(getLocalUser());
+                const response: AxiosResponse<any, any> = await connection.findMe(localUser);
                 const data = response.data;
+
                 setSitesRoutesFiltered(siteRoutes.filter((route: SiteRoute) => {
                     return route.roles.includes(data.role);
                 }));
+
                 return response.data;
             } catch (e) {
                 return {};
@@ -66,7 +82,7 @@ const Base = (): JSX.Element => {
         refetchOnReconnect: true,
     });
 
-    const {data} = query;
+    const {data, refetch} = query;
 
     const [file, setFile] = useState<File>();
     const [fileUploadDialogOpen, setFileUploadDialogOpen] = useState(false);
@@ -81,7 +97,7 @@ const Base = (): JSX.Element => {
 
         setFileUploadDialogConfirmLoading(true);
 
-        connection.uploadProfilePicture(getLocalUser(), file).then((response: AxiosResponse<any, any>) => {
+        connection.uploadProfilePicture(localUser, file).then((response: AxiosResponse<any, any>) => {
             notificationContext.displayNotification("success", "Success", "Profile picture uploaded successfully.");
             setFileUploadDialogOpen(false);
             query.refetch();
@@ -109,7 +125,7 @@ const Base = (): JSX.Element => {
                         background: "#001529",
                     }}
                 >
-                    {getLocalUser() && (data && data.profilePicture) &&
+                    {localUser && (data && data.profilePicture) &&
                         <Avatar size="large"
                                 style={{"cursor": "pointer"}}
                                 src={`data:image/jpg;base64,${data.profilePicture}`}
@@ -119,7 +135,7 @@ const Base = (): JSX.Element => {
                                     }
                                 }/>}
 
-                    {getLocalUser() && (!data || !data.profilePicture) &&
+                    {localUser && (!data || !data.profilePicture) &&
                         <Avatar size="large"
                                 style={{"cursor": "pointer"}}
                                 icon={<UserOutlined/>}
@@ -129,7 +145,7 @@ const Base = (): JSX.Element => {
                                     }
                                 }/>}
 
-                    {!getLocalUser() &&
+                    {!localUser &&
                         <Avatar size="large"
                                 style={{"cursor": "default"}}
                                 icon={<UserOutlined/>}
@@ -141,8 +157,8 @@ const Base = (): JSX.Element => {
                     theme="dark"
                     mode="horizontal"
                     disabled={loading}
-                    defaultSelectedKeys={[currentRoute.key]}
-
+                    selectedKeys={[pageRoute.key]}
+                    defaultSelectedKeys={[pageRoute.key]}
                     onSelect={
                         ({key}) => {
                             navigateToRoute(key as string);

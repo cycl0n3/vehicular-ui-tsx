@@ -38,7 +38,7 @@ const SignIn = (): JSX.Element => {
                     setUserLoggedIn(user);
 
                     navigate("/");
-                    window.location.reload();
+                    // window.location.reload();
                 }
             })
             .catch(error => {
