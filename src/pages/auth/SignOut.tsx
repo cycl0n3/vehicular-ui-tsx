@@ -1,17 +1,20 @@
 import {useContext, useEffect} from "react";
-import {NavigateFunction, useNavigate} from "react-router-dom";
+
+import {useNavigate} from "react-router-dom";
+
+import {siteRoutes} from "../../base/SiteRoutes";
 
 import LocalUserContext from "../../context/LocalUserContext";
 
 const SignOut = (): null => {
-    const navigate: NavigateFunction = useNavigate();
+    const navigate = useNavigate();
 
     const {setUserLoggedOut} = useContext(LocalUserContext);
 
     useEffect(() => {
         setUserLoggedOut();
-        navigate("/");
-        // window.location.reload();
+        const url = siteRoutes.find(route => route.key === "sign-in")?.link || "/";
+        navigate(url);
     }, []);
 
     return null;

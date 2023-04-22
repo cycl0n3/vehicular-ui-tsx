@@ -43,7 +43,7 @@ const Users = (): JSX.Element => {
         refetchOnReconnect: true,
         onError: (error: any) => {
             if (error.message) {
-                notificationContext.displayNotification("error", "Login Failed", error.message);
+                notificationContext.error(error.message);
             }
         },
     });

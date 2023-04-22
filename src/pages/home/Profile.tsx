@@ -131,7 +131,7 @@ const Profile = () => {
                     <Descriptions.Item label="Username">
                         {profileData.username}
                     </Descriptions.Item>
-                    <Descriptions.Item label="Name">{profileData.name}</Descriptions.Item>
+                    <Descriptions.Item label="Name">{profileData.title} {profileData.name}</Descriptions.Item>
                     <Descriptions.Item label="Email">
                         {profileData.email}
                     </Descriptions.Item>

@@ -13,10 +13,7 @@ const Home = (): JSX.Element => {
 
     useEffect(() => {
         const f = log('Home page loaded');
-        const g = log(100);
-
         dispatch(f);
-        dispatch(g);
     }, []);
 
     return (

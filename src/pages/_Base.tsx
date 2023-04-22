@@ -97,6 +97,7 @@ const Base = (): JSX.Element => {
         connection.uploadProfilePicture(localUser, file).then((response: AxiosResponse<any, any>) => {
             notificationContext.success("Profile picture uploaded successfully.");
             setFileUploadDialogOpen(false);
+            fileUploadDialogForm.current.resetFields();
             query.refetch();
         }).catch(() => {
             setFileUploadDialogOpen(false);
