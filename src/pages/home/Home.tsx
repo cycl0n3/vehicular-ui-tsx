@@ -1,10 +1,24 @@
-import React from 'react'
+import React, {useEffect} from 'react'
+
+import { useDispatch } from 'react-redux';
 
 import {Typography} from "antd";
 
 const {Title, Paragraph} = Typography;
 
-const Home = () => {
+import { log } from "../../redux/console/consoleSlice";
+
+const Home = (): JSX.Element => {
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        const f = log('Home page loaded');
+        const g = log(100);
+
+        dispatch(f);
+        dispatch(g);
+    }, []);
+
     return (
         <div>
             <Title>

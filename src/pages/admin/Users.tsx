@@ -15,24 +15,14 @@ import {useQuery} from "@tanstack/react-query";
 import {ADMIN_ROLE} from "../../base/SiteRoutes";
 import {UserOutlined} from "@ant-design/icons";
 
+import NotificationContext from "../../context/NotificationContext";
+
 const Users = (): JSX.Element => {
     const navigate: NavigateFunction = useNavigate();
 
     const {localUser} = useContext(LocalUserContext);
 
-    type NotificationType = "success" | "info" | "warning" | "error";
-
-    const [api, contextHolder] = notification.useNotification();
-
-    const openNotificationWithIcon = (
-        type: NotificationType,
-        error: any
-    ): void => {
-        api[type]({
-            message: "Login Failed",
-            description: error.message,
-        });
-    };
+    const notificationContext = useContext(NotificationContext);
 
     const query = useQuery({
         queryKey: ["users", localUser],
@@ -53,7 +43,7 @@ const Users = (): JSX.Element => {
         refetchOnReconnect: true,
         onError: (error: any) => {
             if (error.message) {
-                openNotificationWithIcon("error", error);
+                notificationContext.displayNotification("error", "Login Failed", error.message);
             }
         },
     });
@@ -135,8 +125,6 @@ const Users = (): JSX.Element => {
 
     return (
         <div>
-            {contextHolder}
-
             {isLoading && (
                 <Descriptions title="User List">
                     <Descriptions.Item label="Status">Loading...</Descriptions.Item>
