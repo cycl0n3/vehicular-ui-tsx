@@ -5,7 +5,7 @@ import {NavigateFunction, useNavigate} from "react-router-dom";
 import LocalUserContext from "../../context/LocalUserContext";
 import {connection} from "../../base/Connection";
 
-import {Descriptions, notification, Table, Tag} from "antd";
+import {Avatar, Descriptions, notification, Table, Tag} from "antd";
 import type {ColumnsType} from "antd/es/table";
 
 import {nanoid} from "nanoid";
@@ -13,6 +13,7 @@ import {nanoid} from "nanoid";
 import {useQuery} from "@tanstack/react-query";
 
 import {ADMIN_ROLE} from "../../base/SiteRoutes";
+import {UserOutlined} from "@ant-design/icons";
 
 const Users = (): JSX.Element => {
     const navigate: NavigateFunction = useNavigate();
@@ -34,7 +35,7 @@ const Users = (): JSX.Element => {
     };
 
     const query = useQuery({
-        queryKey: ["users"],
+        queryKey: ["users", localUser],
         queryFn: async () => {
             try {
                 const response = await connection.findAllUsers(localUser);
@@ -71,6 +72,7 @@ const Users = (): JSX.Element => {
         username: string;
         email: string;
         role: string;
+        profilePicture: string;
         orders: OrderResponseDataType[];
     }
 
@@ -79,6 +81,18 @@ const Users = (): JSX.Element => {
             title: "Id",
             dataIndex: "id",
             key: "id",
+        },
+        {
+            title: "Profile Picture",
+            dataIndex: "profilePicture",
+            key: "profilePicture",
+            render: (profilePicture: string) => (
+                <>
+                    {profilePicture
+                        ? <Avatar src={`data:image/jpg;base64,${profilePicture}`} />
+                        : <Avatar icon={<UserOutlined/>} /> }
+                </>
+            )
         },
         {
             title: "Name",
