@@ -1,6 +1,6 @@
 import React, {useContext, useEffect} from "react";
 
-import {NavigateFunction, useNavigate} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 
 import {Button, Form, Input, Spin, Typography} from "antd";
 
@@ -38,12 +38,11 @@ const SignIn = (): JSX.Element => {
                     setUserLoggedIn(user);
 
                     navigate("/");
-                    // window.location.reload();
                 }
             })
             .catch(error => {
                 setLoading(false);
-                notificationContext.displayNotification("error", "Login Failed", error.message);
+                notificationContext.error("Login Failed");
             })
     };
 
@@ -51,7 +50,7 @@ const SignIn = (): JSX.Element => {
         setUserLoggedOut();
     }, []);
 
-    const navigate: NavigateFunction = useNavigate();
+    const navigate = useNavigate();
 
     const {setUserLoggedIn, setUserLoggedOut} = useContext(LocalUserContext);
 

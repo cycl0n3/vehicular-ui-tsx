@@ -1,11 +1,9 @@
 import {configureStore} from "@reduxjs/toolkit";
 
-import consoleReducer from "./console/consoleSlice";
+import consoleReducer from "./console";
 
 export const store = configureStore({
     reducer: {
         console: consoleReducer
     }
 });
-
-// Path: src\redux\console\consoleSlice.ts

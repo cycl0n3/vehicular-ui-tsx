@@ -3,7 +3,7 @@ import React, {useContext, useEffect, useRef, useState} from "react";
 import {UserOutlined} from '@ant-design/icons';
 import {Avatar, Form, FormInstance, Input, Layout, Menu, Modal, theme} from 'antd';
 
-import {Location, NavigateFunction, Outlet, useLocation, useNavigate} from "react-router-dom";
+import {Outlet, useLocation, useNavigate} from "react-router-dom";
 
 import {useQuery,} from '@tanstack/react-query';
 
@@ -13,8 +13,8 @@ import LocalUserContext from "../context/LocalUserContext";
 import {connection} from "../base/Connection";
 
 import {AxiosResponse} from "axios";
+
 import NotificationContext from "../context/NotificationContext";
-import {ILocalUser} from "../context/ILocalUser";
 
 const {Header, Content, Footer} = Layout;
 
@@ -27,11 +27,11 @@ const Base = (): JSX.Element => {
 
     const notificationContext = useContext(NotificationContext);
 
-    const navigate: NavigateFunction = useNavigate();
+    const navigate = useNavigate();
 
-    const location: Location = useLocation();
+    const location = useLocation();
 
-    const pageRoute: SiteRoute = siteRoutes.find((route: SiteRoute): boolean => route.link === location.pathname) || siteRoutes[0];
+    const pageRoute = siteRoutes.find((route: SiteRoute): boolean => route.link === location.pathname) || siteRoutes[0];
 
     const navigateToRoute = (key: string): void => {
         const path: SiteRoute = siteRoutes.find(route => route.key === key) || siteRoutes[0];
@@ -88,19 +88,19 @@ const Base = (): JSX.Element => {
 
     const fileUploadOK = (): void => {
         if (!file) {
-            notificationContext.displayNotification("error", "Error", "Please select a file to upload.");
+            notificationContext.success("Please select a file to upload.");
             return;
         }
 
         setFileUploadDialogConfirmLoading(true);
 
         connection.uploadProfilePicture(localUser, file).then((response: AxiosResponse<any, any>) => {
-            notificationContext.displayNotification("success", "Success", "Profile picture uploaded successfully.");
+            notificationContext.success("Profile picture uploaded successfully.");
             setFileUploadDialogOpen(false);
             query.refetch();
         }).catch(() => {
             setFileUploadDialogOpen(false);
-            notificationContext.displayNotification("error", "Error", "Error uploading profile picture.");
+            notificationContext.error("Error uploading profile picture.");
         }).finally(() => {
             setFileUploadDialogConfirmLoading(false);
         });

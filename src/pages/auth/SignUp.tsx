@@ -27,6 +27,7 @@ const SignUp = (): JSX.Element => {
         connection.register(name, username, email, password)
             .then(response => {
                 setLoading(false);
+
                 if (response.status === 201) {
                     const user: ILocalUser = {
                         username: username,
@@ -34,24 +35,18 @@ const SignUp = (): JSX.Element => {
                     }
 
                     setUserLoggedIn(user);
-
                     navigate("/profile");
-                    // window.location.reload();
                 }
             })
             .catch(error => {
                 setLoading(false);
-                notificationContext.displayNotification("error", "Sign Up Failed", error.message);
-            })
-
-        console.log("Success:", values);
+                notificationContext.error("Sign Up Failed: " + error.response.data.message);
+            });
     };
 
     const onFinishFailed = (errorInfo: ValidateErrorEntity<any>): void => {
         console.log("Failed:", errorInfo);
     };
-
-    // const [form] = Form.useForm();
 
     useEffect(() => {
         setUserLoggedOut();

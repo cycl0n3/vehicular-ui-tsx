@@ -1,17 +1,14 @@
-import axios, {AxiosInstance, AxiosResponse} from "axios";
+import axios from "axios";
 
 import {config} from "./Constants";
 
 import {ILocalUser} from "../context/ILocalUser";
 
-const instance: AxiosInstance = axios.create({
+const instance = axios.create({
     baseURL: config.url.API_BASE_URL,
 });
 
-const authenticate = (
-    username: string,
-    password: string
-): Promise<AxiosResponse<any, any>> => {
+const authenticate = (username: string, password: string) => {
     return instance.post(
         "/auth/authenticate",
         {
@@ -26,12 +23,7 @@ const authenticate = (
     );
 };
 
-const register = (
-    name: string,
-    username: string,
-    email: string,
-    password: string
-): Promise<AxiosResponse<any, any>> => {
+const register = (name: string, username: string, email: string, password: string) => {
     return instance.post(
         "/auth/signup",
         {
@@ -48,7 +40,7 @@ const register = (
     );
 };
 
-const findMe = (user: ILocalUser | null): Promise<AxiosResponse<any, any>> => {
+const findMe = (user: ILocalUser | null) => {
     if (!user) return Promise.reject("User is null");
 
     return instance.get("/api/users/me", {
@@ -59,9 +51,7 @@ const findMe = (user: ILocalUser | null): Promise<AxiosResponse<any, any>> => {
     });
 };
 
-const findAllUsers = (
-    user: ILocalUser | null
-): Promise<AxiosResponse<any, any>> => {
+const findAllUsers = (user: ILocalUser | null) => {
     if (!user) return Promise.reject("User is null");
 
     return instance.get("/api/users", {
@@ -72,7 +62,7 @@ const findAllUsers = (
     });
 };
 
-const createOrder = (user: ILocalUser | null, description: string): Promise<AxiosResponse<any, any>> => {
+const createOrder = (user: ILocalUser | null, description: string) => {
     if (!user) return Promise.reject("User is null");
 
     return instance.post(
@@ -89,7 +79,7 @@ const createOrder = (user: ILocalUser | null, description: string): Promise<Axio
     );
 }
 
-const uploadProfilePicture = (user: ILocalUser | null, file: File): Promise<AxiosResponse<any, any>> => {
+const uploadProfilePicture = (user: ILocalUser | null, file: File) => {
     if (!user) return Promise.reject("User is null");
 
     const formData = new FormData();

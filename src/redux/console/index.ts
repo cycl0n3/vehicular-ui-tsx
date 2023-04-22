@@ -3,7 +3,7 @@ import {createSlice} from "@reduxjs/toolkit";
 const initialState = {
 }
 
-const consoleSlice = createSlice({
+const index = createSlice({
     name: 'console',
     initialState,
     reducers: {
@@ -13,5 +13,5 @@ const consoleSlice = createSlice({
     }
 });
 
-export const {log} = consoleSlice.actions;
-export default consoleSlice.reducer;
+export const {log} = index.actions;
+export default index.reducer;

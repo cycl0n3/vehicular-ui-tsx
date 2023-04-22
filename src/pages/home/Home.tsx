@@ -6,7 +6,7 @@ import {Typography} from "antd";
 
 const {Title, Paragraph} = Typography;
 
-import { log } from "../../redux/console/consoleSlice";
+import { log } from "../../redux/console";
 
 const Home = (): JSX.Element => {
     const dispatch = useDispatch();

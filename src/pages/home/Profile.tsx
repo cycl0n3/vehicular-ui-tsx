@@ -22,7 +22,7 @@ const Profile = () => {
     const notificationContext= useContext(NotificationContext);
 
     const profileQuery = useQuery({
-        queryKey: ["profile"],
+        queryKey: ["profile", localUser],
         queryFn: async (): Promise<any> => {
             try {
                 const response: AxiosResponse<any, any> = await connection.findMe(localUser);
@@ -41,9 +41,7 @@ const Profile = () => {
         refetchOnWindowFocus: false,
         refetchOnReconnect: true,
         onError: (error: any) => {
-            if (error.message) {
-                notificationContext.displayNotification("error", "Login Failed", error.message);
-            }
+            notificationContext.error(error.message);
         },
     });
 
@@ -92,14 +90,14 @@ const Profile = () => {
                 orderDialogForm.current.resetFields();
                 reFetchProfile();
                 setOrderDialogOpen(false);
-                notificationContext.displayNotification("success", "Order Success", "Order created successfully");
+                notificationContext.success("Order created successfully");
             }).catch((error: any) => {
-                notificationContext.displayNotification("error", "Order Error", error.message);
+                notificationContext.error("Order creation failed (" + error.message + ")");
             }).finally(() => {
                 setOrderDialogConfirmLoading(false);
             });
         }).catch((error: any) => {
-            notificationContext.displayNotification("error", "Order Error", error.message);
+            notificationContext.error("Order creation failed (" + error.message + ")");
         }).finally(() => {
             setOrderDialogConfirmLoading(false);
         });
