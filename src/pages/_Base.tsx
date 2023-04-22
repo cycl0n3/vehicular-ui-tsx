@@ -27,13 +27,11 @@ const Base = (): JSX.Element => {
 
     const notificationContext = useContext(NotificationContext);
 
-    const [loading, setLoading] = useState<boolean>(true);
-
     const navigate: NavigateFunction = useNavigate();
+
     const location: Location = useLocation();
 
     const pageRoute: SiteRoute = siteRoutes.find((route: SiteRoute): boolean => route.link === location.pathname) || siteRoutes[0];
-    // const [currentRoute, setCurrentRoute] = useState<SiteRoute>(pageRoute);
 
     const navigateToRoute = (key: string): void => {
         const path: SiteRoute = siteRoutes.find(route => route.key === key) || siteRoutes[0];
@@ -52,7 +50,7 @@ const Base = (): JSX.Element => {
 
     useEffect(() => {
         if (localUser) {
-            refetch();
+            query.refetch();
         } else {
             setSitesRoutesFiltered(siteRoutes.filter((route: SiteRoute) => {
                 return route.roles.includes(GUEST_ROLE);
@@ -75,14 +73,13 @@ const Base = (): JSX.Element => {
             } catch (e) {
                 return {};
             } finally {
-                setLoading(false);
             }
         },
         refetchOnWindowFocus: false,
         refetchOnReconnect: true,
     });
 
-    const {data, refetch} = query;
+    const {data} = query;
 
     const [file, setFile] = useState<File>();
     const [fileUploadDialogOpen, setFileUploadDialogOpen] = useState(false);
@@ -156,7 +153,7 @@ const Base = (): JSX.Element => {
                     id="menu"
                     theme="dark"
                     mode="horizontal"
-                    disabled={loading}
+                    // disabled={loading}
                     selectedKeys={[pageRoute.key]}
                     defaultSelectedKeys={[pageRoute.key]}
                     onSelect={
