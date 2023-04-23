@@ -13,8 +13,9 @@ import {ILocalUser} from "../../context/ILocalUser";
 import {connection} from "../../base/Connection";
 import NotificationContext from "../../context/NotificationContext";
 
-const {Title} = Typography;
+import {siteRoutes} from "../../base/SiteRoutes";
 
+const {Title} = Typography;
 
 const SignIn = (): JSX.Element => {
     const onFinishFailed = (errorInfo: ValidateErrorEntity<any>): void => {
@@ -37,7 +38,9 @@ const SignIn = (): JSX.Element => {
 
                     setUserLoggedIn(user);
 
-                    navigate("/");
+                    const profileURL = siteRoutes.find(route => route.key === "profile")?.link || "/";
+
+                    navigate(profileURL);
                 }
             })
             .catch(error => {

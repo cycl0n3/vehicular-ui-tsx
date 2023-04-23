@@ -3,6 +3,7 @@ import axios from "axios";
 import {config} from "./Constants";
 
 import {ILocalUser} from "../context/ILocalUser";
+import {PageRequestType} from "../pages/admin/PageRequestType";
 
 const instance = axios.create({
     baseURL: config.url.API_BASE_URL,
@@ -51,15 +52,22 @@ const findMe = (user: ILocalUser | null) => {
     });
 };
 
-const findAllUsers = (user: ILocalUser | null) => {
+const findAllUsers = (user: ILocalUser | null, pageRequest: PageRequestType) => {
     if (!user) return Promise.reject("User is null");
 
+    console.log("findAllUsers", user, pageRequest.page, pageRequest.size);
+
     return instance.get("/api/users", {
+        params: {
+            page: pageRequest.page,
+            size: pageRequest.size,
+        },
         headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${user.accessToken}`,
-        },
+        }
     });
+
 };
 
 const createOrder = (user: ILocalUser | null, description: string) => {
