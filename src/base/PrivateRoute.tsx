@@ -11,11 +11,12 @@ const PrivateRoute = ({children}: any): any => {
 
     const localUserContext = useContext(LocalUserContext);
 
-    if (!localUserContext.isUserLoggedIn()) {
-        const url = siteRoutes.find(route => route.key === "sign-in")?.link || "/";
-        navigate(url);
-        return null;
-    }
+    useEffect(() => {
+        if (!localUserContext.isUserLoggedIn()) {
+            const url = siteRoutes.find(route => route.key === "sign-in")?.link || "/";
+            navigate(url);
+        }
+    }, []);
 
     return children;
 };

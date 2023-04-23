@@ -1,6 +1,7 @@
 import React, {useContext, useEffect} from "react";
 
-import {Button, Form, Input, Spin, Typography} from "antd";
+import {Button, Form, Input, InputNumber, Select, Spin, Typography} from "antd";
+import {Option} from "antd/lib/mentions";
 
 import {ValidateErrorEntity} from "rc-field-form/lib/interface";
 
@@ -17,14 +18,16 @@ const {Title} = Typography;
 
 const SignUp = (): JSX.Element => {
     const onFinish = (values: any) => {
+        const  title = values.title;
         const name = values.name;
         const username = values.username;
+        const age = values.age;
         const email = values.email;
         const password = values.password;
 
         setLoading(true);
 
-        connection.register(name, username, email, password)
+        connection.register(title, name, username, age, email, password)
             .then(response => {
                 setLoading(false);
 
@@ -78,6 +81,19 @@ const SignUp = (): JSX.Element => {
                 }
                 autoComplete="off"
             >
+                <Form.Item name="title" label="Title" rules={[{ required: true }]}>
+                    <Select
+                        placeholder="Select a title"
+                        allowClear
+                    >
+                        <Select.Option value="Mr.">Mr.</Select.Option>
+                        <Select.Option value="Mrs.">Mrs.</Select.Option>
+                        <Select.Option value="Miss">Miss</Select.Option>
+                        <Select.Option value="Dr.">Dr.</Select.Option>
+                        <Select.Option value="Prof.">Prof.</Select.Option>
+                    </Select>
+                </Form.Item>
+
                 <Form.Item
                     label="Name"
                     name="name"
@@ -102,6 +118,19 @@ const SignUp = (): JSX.Element => {
                     ]}
                 >
                     <Input/>
+                </Form.Item>
+
+                <Form.Item
+                    label="Age"
+                    name="age"
+                    rules={[
+                        {
+                            required: true,
+                            message: 'Please input your age!'
+                        }
+                    ]}
+                >
+                    <InputNumber style={{width: '100%'}} />
                 </Form.Item>
 
                 <Form.Item

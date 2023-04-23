@@ -25,12 +25,14 @@ const authenticate = (username: string, password: string) => {
     );
 };
 
-const register = (name: string, username: string, email: string, password: string) => {
+const register = (title: string, name: string, username: string, age: number, email: string, password: string) => {
     return instance.post(
         "/auth/signup",
         {
+            title,
             name,
             username,
+            age,
             email,
             password,
         },

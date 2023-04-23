@@ -9,7 +9,7 @@ import LocalUserContext from "../../context/LocalUserContext";
 const SignOut = (): null => {
     const navigate = useNavigate();
 
-    const {setUserLoggedOut} = useContext(LocalUserContext);
+    const {localUser, setUserLoggedOut} = useContext(LocalUserContext);
 
     useEffect(() => {
         setUserLoggedOut();
