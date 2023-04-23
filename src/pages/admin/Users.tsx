@@ -1,6 +1,6 @@
 import React, {useContext, useEffect} from "react";
 
-import {NavigateFunction, useNavigate} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 
 import LocalUserContext from "../../context/LocalUserContext";
 import {connection} from "../../base/Connection";
@@ -17,10 +17,8 @@ import {UserOutlined} from "@ant-design/icons";
 
 import NotificationContext from "../../context/NotificationContext";
 
-import {PageRequestType} from "./PageRequestType";
-
 const Users = (): JSX.Element => {
-    const navigate: NavigateFunction = useNavigate();
+    const navigate = useNavigate();
 
     const {localUser} = useContext(LocalUserContext);
 
@@ -164,6 +162,7 @@ const Users = (): JSX.Element => {
                 <Table columns={columns} dataSource={structure.users} pagination={{
                     defaultPageSize: size,
                     showSizeChanger: true,
+                    pageSizeOptions: ["15", "30", "45", "60"],
                     pageSize: structure.itemsPerPage,
                     total: structure.totalItems,
                     current: structure.currentPage + 1,
