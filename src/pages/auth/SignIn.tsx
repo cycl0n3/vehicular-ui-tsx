@@ -11,6 +11,7 @@ import LocalUserContext from "../../context/LocalUserContext";
 import {ILocalUser} from "../../context/ILocalUser";
 
 import {connection} from "../../base/Connection";
+
 import NotificationContext from "../../context/NotificationContext";
 
 import {siteRoutes} from "../../base/SiteRoutes";
@@ -30,18 +31,17 @@ const SignIn = (): JSX.Element => {
         connection.authenticate(username, password)
             .then(response => {
                 setLoading(false);
-                if (response.status === 200) {
-                    const user: ILocalUser = {
-                        username: username,
-                        accessToken: response.data.accessToken,
-                    }
 
-                    setUserLoggedIn(user);
-
-                    const profileURL = siteRoutes.find(route => route.key === "profile")?.link || "/";
-
-                    navigate(profileURL);
+                const user: ILocalUser = {
+                    username: username,
+                    accessToken: response.data.accessToken,
                 }
+
+                setUserLoggedIn(user);
+
+                const profileURL = siteRoutes.find(route => route.key === "profile")?.link || "/";
+
+                navigate(profileURL);
             })
             .catch(error => {
                 setLoading(false);

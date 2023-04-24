@@ -26,14 +26,14 @@ export const siteRoutes: SiteRoute[] = [
         label: "Home",
         link: "/",
         element: <Home/>,
-        roles: [GUEST_ROLE, USER_ROLE, ADMIN_ROLE],
+        roles: [GUEST_ROLE],
     },
     {
         key: "about",
         label: "About",
         link: "/about",
         element: <About/>,
-        roles: [GUEST_ROLE, USER_ROLE, ADMIN_ROLE],
+        roles: [GUEST_ROLE],
     },
     {
         key: "profile",

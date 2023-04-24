@@ -1,7 +1,9 @@
 import React from "react";
+
 import ReactDOM from "react-dom/client";
 
 import {Provider} from "react-redux";
+
 import {store} from "./redux/store";
 
 import App from "./App";
@@ -9,6 +11,7 @@ import App from "./App";
 import "./index.css";
 
 import {LocalUserContextProvider} from "./context/LocalUserContext";
+
 import {NotificationProvider} from "./context/NotificationContext";
 
 document.title = "Vehicular UI";

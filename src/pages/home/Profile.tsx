@@ -5,11 +5,13 @@ import {Button, Descriptions, Form, FormInstance, Input, Modal, Tag, Typography,
 import {useQuery} from "@tanstack/react-query";
 
 import LocalUserContext from "../../context/LocalUserContext";
+
 import {connection} from "../../base/Connection";
 
 import {ADMIN_ROLE} from "../../base/SiteRoutes";
 
 import Table, {ColumnsType} from "antd/es/table";
+
 import {PlusCircleTwoTone} from "@ant-design/icons";
 
 import {AxiosResponse} from "axios";
@@ -49,7 +51,6 @@ const Profile = () => {
         isLoading: isProfileLoading,
         isError: isProfileError,
         data: profileData,
-        refetch: reFetchProfile,
     } = profileQuery;
 
     interface DataType {
@@ -88,7 +89,7 @@ const Profile = () => {
             connection.createOrder(localUser, values.description).then(() => {
                 // @ts-ignore
                 orderDialogForm.current.resetFields();
-                reFetchProfile();
+                profileQuery.refetch();
                 setOrderDialogOpen(false);
                 notificationContext.success("Order created successfully");
             }).catch((error: any) => {
@@ -166,7 +167,7 @@ const Profile = () => {
                         />
                     </Typography.Title>
 
-                    <Table columns={columns} dataSource={profileData.orders}/>
+                    <Table columns={columns} dataSource={profileData.orders} />
 
                     <Modal
                         title="Add new order"

@@ -1,7 +1,6 @@
 import React, {useContext, useEffect} from "react";
 
 import {Button, Form, Input, InputNumber, Select, Spin, Typography} from "antd";
-import {Option} from "antd/lib/mentions";
 
 import {ValidateErrorEntity} from "rc-field-form/lib/interface";
 
@@ -12,7 +11,10 @@ import LocalUserContext from "../../context/LocalUserContext";
 import {ILocalUser} from "../../context/ILocalUser";
 
 import {connection} from "../../base/Connection";
+
 import NotificationContext from "../../context/NotificationContext";
+
+import {siteRoutes} from "../../base/SiteRoutes";
 
 const {Title} = Typography;
 
@@ -25,21 +27,24 @@ const SignUp = (): JSX.Element => {
         const email = values.email;
         const password = values.password;
 
+        console.log("Success:", values)
+
         setLoading(true);
 
         connection.register(title, name, username, age, email, password)
             .then(response => {
                 setLoading(false);
 
-                if (response.status === 201) {
-                    const user: ILocalUser = {
-                        username: username,
-                        accessToken: response.data.accessToken,
-                    }
-
-                    setUserLoggedIn(user);
-                    navigate("/profile");
+                const user: ILocalUser = {
+                    username: username,
+                    accessToken: response.data.accessToken,
                 }
+
+                setUserLoggedIn(user);
+
+                const profileURL = siteRoutes.find(route => route.key === "profile")?.link || "/";
+
+                navigate(profileURL);
             })
             .catch(error => {
                 setLoading(false);
@@ -48,7 +53,6 @@ const SignUp = (): JSX.Element => {
     };
 
     const onFinishFailed = (errorInfo: ValidateErrorEntity<any>): void => {
-        console.log("Failed:", errorInfo);
     };
 
     useEffect(() => {
