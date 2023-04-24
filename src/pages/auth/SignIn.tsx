@@ -16,7 +16,13 @@ import {siteRoutes} from "../../base/SiteRoutes";
 
 const {Title} = Typography;
 
+import * as USER from "../../redux/user";
+
+import {useAppDispatch} from "../../redux/store";
+
 const SignIn = () => {
+
+    const dispatch = useAppDispatch();
 
     const onFinish = (values: any): void => {
         setLoading(true);
@@ -33,7 +39,7 @@ const SignIn = () => {
                     accessToken: response.data.accessToken,
                 }
 
-                login(user);
+                login(user); dispatch(USER.login(user));
 
                 const profileURL = siteRoutes.find(route => route.key === "profile")?.link || "/";
 

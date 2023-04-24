@@ -45,9 +45,13 @@ const UserContextProvider = ({children}: {children: ReactNode}): JSX.Element => 
 
     const valid = (): boolean => {
         try {
-            const userStr = localStorage.getItem('user') || '';
+            const userStr = localStorage.getItem('user') || '{}';
             const user= JSON.parse(userStr) as IUser;
-            return user !== null && user.username !== '' && user.accessToken !== '';
+            return user !== null
+                && user.username !== undefined
+                && user.username !== ''
+                && user.accessToken !== undefined
+                && user.accessToken !== '';
         } catch (e) {
             return false;
         }

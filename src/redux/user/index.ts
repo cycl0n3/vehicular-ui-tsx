@@ -12,7 +12,7 @@ const index = createSlice({
     initialState,
     reducers: {
         login: (state, action): void => {
-            state.username = action.payload.email;
+            state.username = action.payload.username;
             state.accessToken = action.payload.accessToken;
         },
         logout: (state): void => {

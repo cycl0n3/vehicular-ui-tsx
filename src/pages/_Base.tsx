@@ -161,7 +161,7 @@ const Base = () => {
                     defaultSelectedKeys={[pageRoute.key]}
                     onSelect={
                         ({key}) => {
-                            navigateToRoute(key as string);
+                            navigateToRoute(key);
                         }
                     }
                     items={sitesRoutesFiltered.map((route: SiteRoute) => {

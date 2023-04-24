@@ -6,13 +6,20 @@ import {siteRoutes} from "../../base/SiteRoutes";
 
 import UserContext from "../../context/UserContext";
 
+import * as USER from "../../redux/user";
+
+import {useAppDispatch} from "../../redux/store";
+
 const SignOut = (): null => {
+    const dispatch = useAppDispatch();
+
     const navigate = useNavigate();
 
     const {logout} = useContext(UserContext);
 
     useEffect(() => {
-        logout();
+        logout(); dispatch(USER.logout());
+
         const url = siteRoutes.find(route => route.key === "sign-in")?.link || "/";
         navigate(url);
     }, []);
