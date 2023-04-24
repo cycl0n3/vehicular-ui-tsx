@@ -14,4 +14,5 @@ const index = createSlice({
 });
 
 export const {log} = index.actions;
+
 export default index.reducer;
