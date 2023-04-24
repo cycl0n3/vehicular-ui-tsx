@@ -4,7 +4,7 @@ import {config} from "./Constants";
 
 import {ILocalUser} from "../types/ILocalUser";
 
-import {PageRequestType} from "../types/PageRequestType";
+import {IPageRequest} from "../types/IPageRequest";
 
 const instance = axios.create({
     baseURL: config.url.API_BASE_URL + "/" +config.url.API + "/" +config.url.API_VERSION,
@@ -55,7 +55,7 @@ const findMe = (user: ILocalUser | null) => {
     });
 };
 
-const findAllUsers = (user: ILocalUser | null, pageRequest: PageRequestType) => {
+const findAllUsers = (user: ILocalUser | null, pageRequest: IPageRequest) => {
     if (!user) return Promise.reject("User is null");
 
     return instance.get("/users", {

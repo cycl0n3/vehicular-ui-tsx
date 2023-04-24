@@ -1,4 +1,4 @@
-export type PageRequestType = {
+export interface IPageRequest {
     page: number;
     size: number;
 }
