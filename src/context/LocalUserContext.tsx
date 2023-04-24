@@ -22,7 +22,8 @@ const LocalUserContextProvider = ({children}: any): JSX.Element => {
 
     const getLocalUser = (): ILocalUser | null => {
         try {
-            return JSON.parse(localStorage.getItem('user') || '---') as ILocalUser;
+            const userStr = localStorage.getItem('user') || '';
+            return JSON.parse(userStr) as ILocalUser;
         } catch (e) {
             setUserLoggedOut();
             return null;
