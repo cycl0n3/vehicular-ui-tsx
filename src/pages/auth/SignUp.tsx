@@ -6,9 +6,9 @@ import {ValidateErrorEntity} from "rc-field-form/lib/interface";
 
 import {useNavigate} from "react-router-dom";
 
-import LocalUserContext from "../../context/LocalUserContext";
+import UserContext from "../../context/UserContext";
 
-import {ILocalUser} from "../../types/ILocalUser";
+import {IUser} from "../../types/IUser";
 
 import {connection} from "../../base/Connection";
 
@@ -35,12 +35,12 @@ const SignUp = () => {
             .then(response => {
                 setLoading(false);
 
-                const user: ILocalUser = {
+                const user: IUser = {
                     username: username,
                     accessToken: response.data.accessToken,
                 }
 
-                setUserLoggedIn(user);
+                login(user);
 
                 const profileURL = siteRoutes.find(route => route.key === "profile")?.link || "/";
 
@@ -56,12 +56,12 @@ const SignUp = () => {
     };
 
     useEffect(() => {
-        setUserLoggedOut();
+        logout();
     }, []);
 
     const navigate = useNavigate();
 
-    const {setUserLoggedIn, setUserLoggedOut} = useContext(LocalUserContext);
+    const {login, logout} = useContext(UserContext);
 
     const [loading, setLoading] = React.useState(false);
 

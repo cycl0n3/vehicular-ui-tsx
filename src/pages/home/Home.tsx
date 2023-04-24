@@ -1,25 +1,18 @@
 import React, {useEffect} from 'react'
 
-import {useDispatch, useSelector} from 'react-redux';
-
 import {Typography} from "antd";
 
 const {Title, Paragraph} = Typography;
-
-import { log } from "../../redux/console";
 
 import { useAppDispatch, useAppSelector } from "../../redux/store";
 
 const Home = (): JSX.Element => {
     const dispatch = useAppDispatch();
 
-    const userName = useAppSelector(state => state.user);
+    const user = useAppSelector(state => state.user);
 
     useEffect(() => {
-        const f = log('Home page loaded');
-        dispatch(f);
-
-        console.log('userName: ', userName);
+        console.log('user: ', user);
     }, []);
 
     return (
@@ -56,4 +49,4 @@ const Home = (): JSX.Element => {
     )
 }
 
-export default Home
+export default Home;

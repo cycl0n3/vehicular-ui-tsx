@@ -2,7 +2,7 @@ import React, {useContext, useEffect} from "react";
 
 import {useNavigate} from "react-router-dom";
 
-import LocalUserContext from "../../context/LocalUserContext";
+import UserContext from "../../context/UserContext";
 
 import {connection} from "../../base/Connection";
 
@@ -23,7 +23,7 @@ import NotificationContext from "../../context/NotificationContext";
 const Users = () => {
     const navigate = useNavigate();
 
-    const {localUser} = useContext(LocalUserContext);
+    const {user} = useContext(UserContext);
 
     const notificationContext = useContext(NotificationContext);
 
@@ -31,10 +31,10 @@ const Users = () => {
     const [size, setSize] = React.useState<number>(15);
 
     const fetchUsersQuery = useQuery({
-        queryKey: ["fetchUsersQuery:Users", localUser, page, size],
+        queryKey: ["fetchUsersQuery:Users", user, page, size],
         queryFn: async () => {
             try {
-                const response = await connection.findAllUsers(localUser, {page, size});
+                const response = await connection.findAllUsers(user, {page, size});
 
                 response.data.users = response.data.users.map((user: any) => {
                     return {

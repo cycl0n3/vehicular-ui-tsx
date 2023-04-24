@@ -1,5 +1,5 @@
 
-export interface ILocalUser {
+export interface IUser {
   username: string;
   accessToken: string;
 }

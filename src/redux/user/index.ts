@@ -3,21 +3,25 @@ import {createSlice} from "@reduxjs/toolkit";
 console.log("REDUX: user/index.ts");
 
 const initialState = {
-    user: {
-        name: "John Doe",
-    }
+    username: "",
+    accessToken: "",
 }
 
 const index = createSlice({
     name: 'user',
     initialState,
     reducers: {
-        setName: (state, action) => {
-            state.user.name = action.payload;
+        login: (state, action): void => {
+            state.username = action.payload.email;
+            state.accessToken = action.payload.accessToken;
+        },
+        logout: (state): void => {
+            state.username = "";
+            state.accessToken = "";
         }
     }
 });
 
-export const {setName} = index.actions;
+export const {login, logout} = index.actions;
 
 export default index.reducer;

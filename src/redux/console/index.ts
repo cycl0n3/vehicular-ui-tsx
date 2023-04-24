@@ -1,5 +1,7 @@
 import {createSlice} from "@reduxjs/toolkit";
 
+console.log("REDUX: console/index.ts");
+
 const initialState = {
 }
 

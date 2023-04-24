@@ -2,7 +2,7 @@ import axios from "axios";
 
 import {config} from "./Constants";
 
-import {ILocalUser} from "../types/ILocalUser";
+import {IUser} from "../types/IUser";
 
 import {IPageRequest} from "../types/IPageRequest";
 
@@ -44,7 +44,7 @@ const register = (title: string, name: string, username: string, age: number, em
     );
 };
 
-const findMe = (user: ILocalUser | null) => {
+const findMe = (user: IUser | null) => {
     if (!user) return Promise.reject("User is null");
 
     return instance.get("/users/me", {
@@ -55,7 +55,7 @@ const findMe = (user: ILocalUser | null) => {
     });
 };
 
-const findAllUsers = (user: ILocalUser | null, pageRequest: IPageRequest) => {
+const findAllUsers = (user: IUser | null, pageRequest: IPageRequest) => {
     if (!user) return Promise.reject("User is null");
 
     return instance.get("/users", {
@@ -70,7 +70,7 @@ const findAllUsers = (user: ILocalUser | null, pageRequest: IPageRequest) => {
     });
 };
 
-const createOrder = (user: ILocalUser | null, description: string) => {
+const createOrder = (user: IUser | null, description: string) => {
     if (!user) return Promise.reject("User is null");
 
     return instance.post(
@@ -87,7 +87,7 @@ const createOrder = (user: ILocalUser | null, description: string) => {
     );
 }
 
-const uploadProfilePicture = (user: ILocalUser | null, file: File) => {
+const uploadProfilePicture = (user: IUser | null, file: File) => {
     if (!user) return Promise.reject("User is null");
 
     const formData = new FormData();

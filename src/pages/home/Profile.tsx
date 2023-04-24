@@ -4,7 +4,7 @@ import {Button, Descriptions, Form, FormInstance, Input, Modal, Tag, Typography,
 
 import {useQuery} from "@tanstack/react-query";
 
-import LocalUserContext from "../../context/LocalUserContext";
+import UserContext from "../../context/UserContext";
 
 import {connection} from "../../base/Connection";
 
@@ -19,15 +19,15 @@ import {AxiosResponse} from "axios";
 import NotificationContext from "../../context/NotificationContext";
 
 const Profile = () => {
-    const {localUser} = useContext(LocalUserContext);
+    const {user} = useContext(UserContext);
 
     const notificationContext= useContext(NotificationContext);
 
     const fetchMeQuery = useQuery({
-        queryKey: ["fetchMeQuery:Profile", localUser],
+        queryKey: ["fetchMeQuery:Profile", user],
         queryFn: async (): Promise<any> => {
             try {
-                const response = await connection.findMe(localUser);
+                const response = await connection.findMe(user);
                 const data = response.data;
 
                 data.orders = data.orders.map((order: any) => {
@@ -88,7 +88,7 @@ const Profile = () => {
 
         // @ts-ignore
         orderDialogForm.current.validateFields().then((values: any): void => {
-            connection.createOrder(localUser, values.description).then(() => {
+            connection.createOrder(user, values.description).then(() => {
                 // @ts-ignore
                 orderDialogForm.current.resetFields();
                 fetchMeQuery.refetch();

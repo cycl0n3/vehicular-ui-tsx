@@ -10,7 +10,7 @@ import App from "./App";
 
 import "./index.css";
 
-import {LocalUserContextProvider} from "./context/LocalUserContext";
+import {UserContextProvider} from "./context/UserContext";
 
 import {NotificationProvider} from "./context/NotificationContext";
 
@@ -18,12 +18,12 @@ document.title = "Vehicular UI";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
-    <LocalUserContextProvider>
+    <UserContextProvider>
       <NotificationProvider>
         <Provider store={store}>
             <App/>
         </Provider>
       </NotificationProvider>
-    </LocalUserContextProvider>
+    </UserContextProvider>
   </React.StrictMode>
 );

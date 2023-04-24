@@ -10,7 +10,7 @@ import {useQuery,} from '@tanstack/react-query';
 
 import {GUEST_ROLE, SiteRoute, siteRoutes} from "../base/SiteRoutes";
 
-import LocalUserContext from "../context/LocalUserContext";
+import UserContext from "../context/UserContext";
 
 import {connection} from "../base/Connection";
 
@@ -25,7 +25,7 @@ const Base = () => {
         token: {colorBgContainer},
     } = theme.useToken();
 
-    const {localUser} = useContext(LocalUserContext);
+    const {user} = useContext(UserContext);
 
     const notificationContext = useContext(NotificationContext);
 
@@ -51,20 +51,20 @@ const Base = () => {
     }, []);
 
     useEffect(() => {
-        if (localUser) {
+        if (user) {
             fetchMeQuery.refetch();
         } else {
             setSitesRoutesFiltered(siteRoutes.filter((route: SiteRoute) => {
                 return route.roles.includes(GUEST_ROLE);
             }));
         }
-    }, [localUser]);
+    }, [user]);
 
     const fetchMeQuery = useQuery({
-        queryKey: ["fetchMeQuery:_Base", localUser],
+        queryKey: ["fetchMeQuery:_Base", user],
         queryFn: async (): Promise<any> => {
             try {
-                const response = await connection.findMe(localUser);
+                const response = await connection.findMe(user);
                 const data = response.data;
 
                 setSitesRoutesFiltered(siteRoutes.filter((route: SiteRoute) => {
@@ -96,7 +96,7 @@ const Base = () => {
 
         setFileUploadDialogConfirmLoading(true);
 
-        connection.uploadProfilePicture(localUser, file).then((response: AxiosResponse<any, any>) => {
+        connection.uploadProfilePicture(user, file).then((response: AxiosResponse<any, any>) => {
             notificationContext.success("Profile picture uploaded successfully.");
             setFileUploadDialogOpen(false);
             fileUploadDialogForm.current.resetFields();
@@ -125,7 +125,7 @@ const Base = () => {
                         background: "#001529",
                     }}
                 >
-                    {localUser && (data && data.profilePicture) &&
+                    {user && (data && data.profilePicture) &&
                         <Avatar size="large"
                                 style={{"cursor": "pointer"}}
                                 src={`data:image/jpg;base64,${data.profilePicture}`}
@@ -135,7 +135,7 @@ const Base = () => {
                                     }
                                 }/>}
 
-                    {localUser && (!data || !data.profilePicture) &&
+                    {user && (!data || !data.profilePicture) &&
                         <Avatar size="large"
                                 style={{"cursor": "pointer"}}
                                 icon={<UserOutlined/>}
@@ -145,7 +145,7 @@ const Base = () => {
                                     }
                                 }/>}
 
-                    {!localUser &&
+                    {!user &&
                         <Avatar size="large"
                                 style={{"cursor": "default"}}
                                 icon={<UserOutlined/>}

@@ -4,7 +4,7 @@ import React, {
 
 import {useNavigate} from "react-router-dom";
 
-import LocalUserContext from "../context/LocalUserContext";
+import UserContext from "../context/UserContext";
 
 import {siteRoutes} from "./SiteRoutes";
 
@@ -13,10 +13,10 @@ import {useContext, useEffect} from "react";
 const PrivateRoute = ({children}: {children: ReactNode}): JSX.Element => {
     const navigate = useNavigate();
 
-    const localUserContext = useContext(LocalUserContext);
+    const localUserContext = useContext(UserContext);
 
     useEffect(() => {
-        if (!localUserContext.isUserLoggedIn()) {
+        if (!localUserContext.valid()) {
             const url = siteRoutes.find(route => route.key === "sign-in")?.link || "/";
             navigate(url);
         }
