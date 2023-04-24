@@ -7,7 +7,7 @@ import {ILocalUser} from "../context/ILocalUser";
 import {PageRequestType} from "../pages/admin/PageRequestType";
 
 const instance = axios.create({
-    baseURL: config.url.API_BASE_URL,
+    baseURL: config.url.API_BASE_URL + "/" +config.url.API + "/" +config.url.API_VERSION,
 });
 
 const authenticate = (username: string, password: string) => {
@@ -27,7 +27,7 @@ const authenticate = (username: string, password: string) => {
 
 const register = (title: string, name: string, username: string, age: number, email: string, password: string) => {
     return instance.post(
-        "/auth/signup",
+        "/auth/register",
         {
             title,
             name,
@@ -47,7 +47,7 @@ const register = (title: string, name: string, username: string, age: number, em
 const findMe = (user: ILocalUser | null) => {
     if (!user) return Promise.reject("User is null");
 
-    return instance.get("/api/users/me", {
+    return instance.get("/users/me", {
         headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${user.accessToken}`,
@@ -58,7 +58,7 @@ const findMe = (user: ILocalUser | null) => {
 const findAllUsers = (user: ILocalUser | null, pageRequest: PageRequestType) => {
     if (!user) return Promise.reject("User is null");
 
-    return instance.get("/api/users", {
+    return instance.get("/users", {
         params: {
             page: pageRequest.page,
             size: pageRequest.size,
@@ -75,7 +75,7 @@ const createOrder = (user: ILocalUser | null, description: string) => {
     if (!user) return Promise.reject("User is null");
 
     return instance.post(
-        "/api/orders",
+        "/orders",
         {
             description,
         },
@@ -94,7 +94,7 @@ const uploadProfilePicture = (user: ILocalUser | null, file: File) => {
     const formData = new FormData();
     formData.append("profile-picture", file);
 
-    return instance.post("/api/users/profile-picture", formData, {
+    return instance.post("/users/profile-picture", formData, {
         headers: {
             "Content-Type": "multipart/form-data",
             Authorization: `Bearer ${user.accessToken}`,

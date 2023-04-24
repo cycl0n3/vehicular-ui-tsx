@@ -31,7 +31,6 @@ const Users = (): JSX.Element => {
         queryKey: ["users", localUser, page, size],
         queryFn: async () => {
             try {
-                console.log("queryFn", localUser, page, size);
                 const response = await connection.findAllUsers(localUser, {page, size});
 
                 response.data.users = response.data.users.map((user: any) => {
@@ -53,6 +52,7 @@ const Users = (): JSX.Element => {
                 };
             }
         },
+        keepPreviousData: true,
         refetchOnWindowFocus: false,
         refetchOnReconnect: true,
         onError: (error: any) => {
@@ -66,7 +66,7 @@ const Users = (): JSX.Element => {
         setPage(() => 0);
     }, [size]);
 
-    const {isLoading, isError, data: structure} = query;
+    const {isLoading, isError, data: structure, isPreviousData} = query;
 
     interface OrderResponseDataType {
         id: string;
@@ -167,6 +167,7 @@ const Users = (): JSX.Element => {
                     total: structure.totalItems,
                     current: structure.currentPage + 1,
                     defaultCurrent: 1,
+                    disabled: isPreviousData,
                     onChange: (page: number) => {
                         setPage(() => page - 1);
                     },
