@@ -23,18 +23,20 @@ const Profile = () => {
 
     const notificationContext= useContext(NotificationContext);
 
-    const profileQuery = useQuery({
-        queryKey: ["profile", localUser],
+    const fetchMeQuery = useQuery({
+        queryKey: ["fetchMeQuery:Profile", localUser],
         queryFn: async (): Promise<any> => {
             try {
-                const response: AxiosResponse<any, any> = await connection.findMe(localUser);
+                const response = await connection.findMe(localUser);
                 const data = response.data;
+
                 data.orders = data.orders.map((order: any) => {
                     return {
                         ...order,
                         key: order.id,
                     };
                 });
+
                 return data;
             } catch (e) {
                 return [];
@@ -51,7 +53,7 @@ const Profile = () => {
         isLoading: isProfileLoading,
         isError: isProfileError,
         data: profileData,
-    } = profileQuery;
+    } = fetchMeQuery;
 
     interface DataType {
         id: string;
@@ -89,7 +91,7 @@ const Profile = () => {
             connection.createOrder(localUser, values.description).then(() => {
                 // @ts-ignore
                 orderDialogForm.current.resetFields();
-                profileQuery.refetch();
+                fetchMeQuery.refetch();
                 setOrderDialogOpen(false);
                 notificationContext.success("Order created successfully");
             }).catch((error: any) => {

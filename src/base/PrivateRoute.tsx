@@ -1,3 +1,7 @@
+import React, {
+    ReactNode
+} from "react";
+
 import {useNavigate} from "react-router-dom";
 
 import LocalUserContext from "../context/LocalUserContext";
@@ -6,7 +10,7 @@ import {siteRoutes} from "./SiteRoutes";
 
 import {useContext, useEffect} from "react";
 
-const PrivateRoute = ({children}: any): any => {
+const PrivateRoute = ({children}: {children: ReactNode}): JSX.Element => {
     const navigate = useNavigate();
 
     const localUserContext = useContext(LocalUserContext);
@@ -18,7 +22,9 @@ const PrivateRoute = ({children}: any): any => {
         }
     }, []);
 
-    return children;
+    return <>
+        {children}
+    </>;
 };
 
 export default PrivateRoute;

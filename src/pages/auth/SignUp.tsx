@@ -8,7 +8,7 @@ import {useNavigate} from "react-router-dom";
 
 import LocalUserContext from "../../context/LocalUserContext";
 
-import {ILocalUser} from "../../context/ILocalUser";
+import {ILocalUser} from "../../types/ILocalUser";
 
 import {connection} from "../../base/Connection";
 
@@ -18,7 +18,7 @@ import {siteRoutes} from "../../base/SiteRoutes";
 
 const {Title} = Typography;
 
-const SignUp = (): JSX.Element => {
+const SignUp = () => {
     const onFinish = (values: any) => {
         const  title = values.title;
         const name = values.name;

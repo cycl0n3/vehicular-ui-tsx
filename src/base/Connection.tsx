@@ -2,9 +2,9 @@ import axios from "axios";
 
 import {config} from "./Constants";
 
-import {ILocalUser} from "../context/ILocalUser";
+import {ILocalUser} from "../types/ILocalUser";
 
-import {PageRequestType} from "../pages/admin/PageRequestType";
+import {PageRequestType} from "../types/PageRequestType";
 
 const instance = axios.create({
     baseURL: config.url.API_BASE_URL + "/" +config.url.API + "/" +config.url.API_VERSION,
@@ -68,7 +68,6 @@ const findAllUsers = (user: ILocalUser | null, pageRequest: PageRequestType) => 
             Authorization: `Bearer ${user.accessToken}`,
         }
     });
-
 };
 
 const createOrder = (user: ILocalUser | null, description: string) => {

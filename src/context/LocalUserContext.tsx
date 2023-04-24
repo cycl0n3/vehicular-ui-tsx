@@ -1,6 +1,9 @@
-import React, {useEffect} from 'react';
+import React, {
+    ReactNode,
+    useEffect
+} from 'react';
 
-import {ILocalUser} from './ILocalUser';
+import {ILocalUser} from '../types/ILocalUser';
 
 type LocalUserContextType = {
     localUser: ILocalUser | null;
@@ -12,7 +15,7 @@ type LocalUserContextType = {
 
 const LocalUserContext = React.createContext<LocalUserContextType>({} as LocalUserContextType);
 
-const LocalUserContextProvider = ({children}: any): JSX.Element => {
+const LocalUserContextProvider = ({children}: {children: ReactNode}): JSX.Element => {
     useEffect(() => {
         const user = getLocalUser();
         setLocalUser(user);

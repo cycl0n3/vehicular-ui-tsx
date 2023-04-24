@@ -20,7 +20,7 @@ import NotificationContext from "../context/NotificationContext";
 
 const {Header, Content, Footer} = Layout;
 
-const Base = (): JSX.Element => {
+const Base = () => {
     const {
         token: {colorBgContainer},
     } = theme.useToken();
@@ -52,7 +52,7 @@ const Base = (): JSX.Element => {
 
     useEffect(() => {
         if (localUser) {
-            query.refetch();
+            fetchMeQuery.refetch();
         } else {
             setSitesRoutesFiltered(siteRoutes.filter((route: SiteRoute) => {
                 return route.roles.includes(GUEST_ROLE);
@@ -60,11 +60,11 @@ const Base = (): JSX.Element => {
         }
     }, [localUser]);
 
-    const query = useQuery({
-        queryKey: ["me", localUser],
+    const fetchMeQuery = useQuery({
+        queryKey: ["fetchMeQuery:_Base", localUser],
         queryFn: async (): Promise<any> => {
             try {
-                const response: AxiosResponse<any, any> = await connection.findMe(localUser);
+                const response = await connection.findMe(localUser);
                 const data = response.data;
 
                 setSitesRoutesFiltered(siteRoutes.filter((route: SiteRoute) => {
@@ -81,7 +81,7 @@ const Base = (): JSX.Element => {
         refetchOnReconnect: true,
     });
 
-    const {data} = query;
+    const {data} = fetchMeQuery;
 
     const [file, setFile] = useState<File>();
     const [fileUploadDialogOpen, setFileUploadDialogOpen] = useState(false);
@@ -100,7 +100,7 @@ const Base = (): JSX.Element => {
             notificationContext.success("Profile picture uploaded successfully.");
             setFileUploadDialogOpen(false);
             fileUploadDialogForm.current.resetFields();
-            query.refetch();
+            fetchMeQuery.refetch();
         }).catch(() => {
             setFileUploadDialogOpen(false);
             notificationContext.error("Error uploading profile picture.");

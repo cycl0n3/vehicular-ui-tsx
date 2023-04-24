@@ -20,7 +20,7 @@ import {UserOutlined} from "@ant-design/icons";
 
 import NotificationContext from "../../context/NotificationContext";
 
-const Users = (): JSX.Element => {
+const Users = () => {
     const navigate = useNavigate();
 
     const {localUser} = useContext(LocalUserContext);
@@ -30,8 +30,8 @@ const Users = (): JSX.Element => {
     const [page, setPage] = React.useState<number>(0);
     const [size, setSize] = React.useState<number>(15);
 
-    const query = useQuery({
-        queryKey: ["users", localUser, page, size],
+    const fetchUsersQuery = useQuery({
+        queryKey: ["fetchUsersQuery:Users", localUser, page, size],
         queryFn: async () => {
             try {
                 const response = await connection.findAllUsers(localUser, {page, size});
@@ -69,7 +69,7 @@ const Users = (): JSX.Element => {
         setPage(() => 0);
     }, [size]);
 
-    const {isLoading, isError, data: structure, isPreviousData} = query;
+    const {isLoading, isError, data: structure, isPreviousData} = fetchUsersQuery;
 
     interface OrderResponseDataType {
         id: string;

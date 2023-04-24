@@ -4,11 +4,9 @@ import {useNavigate} from "react-router-dom";
 
 import {Button, Form, Input, Spin, Typography} from "antd";
 
-import {ValidateErrorEntity} from "rc-field-form/lib/interface";
-
 import LocalUserContext from "../../context/LocalUserContext";
 
-import {ILocalUser} from "../../context/ILocalUser";
+import {ILocalUser} from "../../types/ILocalUser";
 
 import {connection} from "../../base/Connection";
 
@@ -18,9 +16,7 @@ import {siteRoutes} from "../../base/SiteRoutes";
 
 const {Title} = Typography;
 
-const SignIn = (): JSX.Element => {
-    const onFinishFailed = (errorInfo: ValidateErrorEntity<any>): void => {
-    };
+const SignIn = () => {
 
     const onFinish = (values: any): void => {
         setLoading(true);
@@ -74,7 +70,6 @@ const SignIn = (): JSX.Element => {
                 style={{maxWidth: "auto"}}
                 initialValues={{remember: true}}
                 onFinish={onFinish}
-                onFinishFailed={onFinishFailed}
                 autoComplete="off"
             >
                 <Form.Item
