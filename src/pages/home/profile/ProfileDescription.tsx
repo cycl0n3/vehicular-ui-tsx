@@ -4,7 +4,7 @@ import {Descriptions, Tag} from "antd";
 
 import {UserResponse} from "../../../types/UserResponse";
 
-import {ADMIN_ROLE} from "../../../base/SiteRoutes";
+import {ADMIN_ROLE} from "../../_misc/SiteRoutes";
 
 const ProfileDescription = ({ user }: { user: UserResponse }) => {
 

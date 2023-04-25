@@ -8,7 +8,7 @@ import {Outlet, useLocation, useNavigate} from "react-router-dom";
 
 import {useQuery,} from '@tanstack/react-query';
 
-import {GUEST_ROLE, SiteRoute, siteRoutes} from "../base/SiteRoutes";
+import {GUEST_ROLE, SiteRoute, siteRoutes} from "./_misc/SiteRoutes";
 
 import UserContext from "../context/UserContext";
 

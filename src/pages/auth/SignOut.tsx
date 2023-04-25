@@ -2,7 +2,7 @@ import {useContext, useEffect} from "react";
 
 import {useNavigate} from "react-router-dom";
 
-import {siteRoutes} from "../../base/SiteRoutes";
+import {siteRoutes} from "../_misc/SiteRoutes";
 
 import UserContext from "../../context/UserContext";
 

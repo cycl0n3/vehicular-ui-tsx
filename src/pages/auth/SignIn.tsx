@@ -12,7 +12,7 @@ import {connection} from "../../base/Connection";
 
 import NotificationContext from "../../context/NotificationContext";
 
-import {siteRoutes} from "../../base/SiteRoutes";
+import {siteRoutes} from "../_misc/SiteRoutes";
 
 const {Title} = Typography;
 

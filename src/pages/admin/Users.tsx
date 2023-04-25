@@ -14,7 +14,7 @@ import {nanoid} from "nanoid";
 
 import {useQuery} from "@tanstack/react-query";
 
-import {ADMIN_ROLE} from "../../base/SiteRoutes";
+import {ADMIN_ROLE} from "../_misc/SiteRoutes";
 
 import {UserOutlined} from "@ant-design/icons";
 
