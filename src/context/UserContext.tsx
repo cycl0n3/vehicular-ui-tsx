@@ -3,13 +3,13 @@ import React, {
     useEffect
 } from 'react';
 
-import {IUser} from '../types/IUser';
+import {User} from '../types/User';
 
 type UserContextType = {
-    user: IUser | null;
-    // getLocalUser: () => IUser | null;
+    user: User | null;
+    // getLocalUser: () => User | null;
     valid: () => boolean;
-    login: (user: IUser) => void;
+    login: (user: User) => void;
     logout: () => void;
 }
 
@@ -21,19 +21,19 @@ const UserContextProvider = ({children}: {children: ReactNode}) => {
         setUser(user);
     }, []);
 
-    const [localUser, setUser] = React.useState<IUser | null>(null);
+    const [localUser, setUser] = React.useState<User | null>(null);
 
     const getUser = () => {
         try {
             const userStr = localStorage.getItem('user') || '';
-            return JSON.parse(userStr) as IUser;
+            return JSON.parse(userStr) as User;
         } catch (e) {
             logout();
             return null;
         }
     }
 
-    const login = (user: IUser) => {
+    const login = (user: User) => {
         localStorage.setItem('user', JSON.stringify(user));
         setUser(user);
     }
@@ -46,7 +46,7 @@ const UserContextProvider = ({children}: {children: ReactNode}) => {
     const valid = () => {
         try {
             const userStr = localStorage.getItem('user') || '{}';
-            const user= JSON.parse(userStr) as IUser;
+            const user= JSON.parse(userStr) as User;
             return user !== null
                 && user.username !== undefined
                 && user.username !== ''

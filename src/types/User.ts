@@ -1,5 +1,5 @@
 
-export interface IUser {
+export interface User {
   username: string;
   accessToken: string;
 }

@@ -6,7 +6,7 @@ import {Button, Form, Input, Spin, Typography} from "antd";
 
 import UserContext from "../../context/UserContext";
 
-import {IUser} from "../../types/IUser";
+import {User} from "../../types/User";
 
 import {connection} from "../../base/Connection";
 
@@ -34,7 +34,7 @@ const SignIn = () => {
             .then(response => {
                 setLoading(false);
 
-                const user: IUser = {
+                const user: User = {
                     username: username,
                     accessToken: response.data.accessToken,
                 }

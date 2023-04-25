@@ -2,9 +2,12 @@ import axios from "axios";
 
 import {config} from "./Constants";
 
-import {IUser} from "../types/IUser";
+import {User} from "../types/User";
 
-import {IPageRequest} from "../types/IPageRequest";
+import {PageRequest} from "../types/PageRequest";
+
+import {OrderPageResponse} from "../types/OrderPageResponse";
+import {UserPageResponse} from "../types/UserPageResponse";
 
 const instance = axios.create({
     baseURL: config.url.API_BASE_URL + "/" +config.url.API + "/" +config.url.API_VERSION,
@@ -44,7 +47,7 @@ const register = (title: string, name: string, username: string, age: number, em
     );
 };
 
-const findMe = (user: IUser | null) => {
+const findMe = (user: User | null) => {
     if (!user) return Promise.reject("User is null");
 
     return instance.get("/users/me", {
@@ -55,10 +58,25 @@ const findMe = (user: IUser | null) => {
     });
 };
 
-const findAllUsers = (user: IUser | null, pageRequest: IPageRequest) => {
+const findMyOrders = (user: User | null, pageRequest: PageRequest) => {
     if (!user) return Promise.reject("User is null");
 
-    return instance.get("/users", {
+    return instance.get<OrderPageResponse>("/orders/me", {
+        params: {
+            page: pageRequest.page,
+            size: pageRequest.size,
+        },
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user.accessToken}`,
+        }
+    });
+}
+
+const findAllUsers = (user: User | null, pageRequest: PageRequest) => {
+    if (!user) return Promise.reject("User is null");
+
+    return instance.get<UserPageResponse>("/users", {
         params: {
             page: pageRequest.page,
             size: pageRequest.size,
@@ -70,7 +88,7 @@ const findAllUsers = (user: IUser | null, pageRequest: IPageRequest) => {
     });
 };
 
-const createOrder = (user: IUser | null, description: string) => {
+const createOrder = (user: User | null, description: string) => {
     if (!user) return Promise.reject("User is null");
 
     return instance.post(
@@ -87,7 +105,7 @@ const createOrder = (user: IUser | null, description: string) => {
     );
 }
 
-const uploadProfilePicture = (user: IUser | null, file: File) => {
+const uploadProfilePicture = (user: User | null, file: File) => {
     if (!user) return Promise.reject("User is null");
 
     const formData = new FormData();
@@ -107,5 +125,6 @@ export const connection = {
     findMe,
     findAllUsers,
     createOrder,
-    uploadProfilePicture
+    uploadProfilePicture,
+    findMyOrders
 };

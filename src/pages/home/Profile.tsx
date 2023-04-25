@@ -1,4 +1,4 @@
-import React, {useRef, useState, useContext} from "react";
+import React, {useRef, useState, useContext, useEffect} from "react";
 
 import {Button, Descriptions, Form, FormInstance, Input, Modal, Tag, Typography,} from "antd";
 
@@ -15,11 +15,45 @@ import Table, {ColumnsType} from "antd/es/table";
 import {CheckCircleOutlined, CloseCircleOutlined, PlusCircleTwoTone, SyncOutlined} from "@ant-design/icons";
 
 import NotificationContext from "../../context/NotificationContext";
+import {OrderResponse} from "../../types/OrderResponse";
 
 const Profile = () => {
     const {user} = useContext(UserContext);
 
     const notificationContext= useContext(NotificationContext);
+
+    const [page, setPage] = React.useState<number>(0);
+    const [size, setSize] = React.useState<number>(5);
+
+    useEffect(() => {
+        setPage(() => 0);
+    }, [size]);
+
+    const fetchMyOrdersQuery = useQuery({
+        queryKey: ["fetchMyOrdersQuery:Profile", user, page, size],
+        queryFn: async () => {
+            try {
+                const response = await connection.findMyOrders(user, {page, size});
+
+                response.data.orders = response.data.orders.map((order: any) => {
+                    return {
+                        ...order,
+                        key: order.id,
+                    };
+                });
+
+                return response.data;
+            } catch (e) {
+                return {
+                    orders: [],
+                    currentPage: 0,
+                    totalItems: 0,
+                    totalPages: 0,
+                    itemsPerPage: 0,
+                };
+            }
+        }
+    });
 
     const fetchMeQuery = useQuery({
         queryKey: ["fetchMeQuery:Profile", user],
@@ -53,13 +87,14 @@ const Profile = () => {
         data: profileData,
     } = fetchMeQuery;
 
-    interface DataType {
-        id: string;
-        description: string;
-        createdAt: string;
-    }
+    const {
+        isLoading: isOrdersLoading,
+        isError: isOrdersError,
+        data: ordersData,
+        isPreviousData: isOrdersPreviousData,
+    } = fetchMyOrdersQuery;
 
-    const columns: ColumnsType<DataType> = [
+    const columns: ColumnsType<OrderResponse> = [
         {
             title: "Id",
             dataIndex: "id",
@@ -115,11 +150,11 @@ const Profile = () => {
         setOrderDialogConfirmLoading(true);
 
         // @ts-ignore
-        orderDialogForm.current.validateFields().then((values: any): void => {
+        orderDialogForm.current.validateFields().then((values: any) => {
             connection.createOrder(user, values.description).then(() => {
                 // @ts-ignore
                 orderDialogForm.current.resetFields();
-                fetchMeQuery.refetch();
+                fetchMeQuery.refetch(); fetchMyOrdersQuery.refetch();
                 setOrderDialogOpen(false);
                 notificationContext.success("Order created successfully");
             }).catch((error: any) => {
@@ -182,7 +217,7 @@ const Profile = () => {
                 </Descriptions>
             )}
 
-            {profileData && (
+            {ordersData && (
                 <>
                     <Typography.Title level={4} style={{margin: 0}}>
                         Order Info
@@ -197,7 +232,22 @@ const Profile = () => {
                         />
                     </Typography.Title>
 
-                    <Table columns={columns} dataSource={profileData.orders} />
+                    <Table columns={columns} dataSource={ordersData.orders} pagination={{
+                        defaultPageSize: size,
+                        showSizeChanger: true,
+                        pageSizeOptions: ["5", "10", "20"],
+                        pageSize: ordersData.itemsPerPage,
+                        total: ordersData.totalItems,
+                        current: ordersData.currentPage + 1,
+                        defaultCurrent: 1,
+                        disabled: isOrdersPreviousData,
+                        onChange: (page: number) => {
+                            setPage(() => page - 1);
+                        },
+                        onShowSizeChange: (current: number, size: number) => {
+                            setSize(() => size);
+                        }
+                    }} />
 
                     <Modal
                         title="Add new order"

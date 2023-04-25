@@ -8,7 +8,7 @@ import {useNavigate} from "react-router-dom";
 
 import UserContext from "../../context/UserContext";
 
-import {IUser} from "../../types/IUser";
+import {User} from "../../types/User";
 
 import {connection} from "../../base/Connection";
 
@@ -35,7 +35,7 @@ const SignUp = () => {
             .then(response => {
                 setLoading(false);
 
-                const user: IUser = {
+                const user: User = {
                     username: username,
                     accessToken: response.data.accessToken,
                 }

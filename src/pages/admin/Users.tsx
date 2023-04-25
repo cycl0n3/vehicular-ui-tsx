@@ -20,6 +20,10 @@ import {UserOutlined} from "@ant-design/icons";
 
 import NotificationContext from "../../context/NotificationContext";
 
+import {UserResponse} from "../../types/UserResponse";
+
+import {OrderResponse} from "../../types/OrderResponse";
+
 const Users = () => {
     const navigate = useNavigate();
 
@@ -71,23 +75,7 @@ const Users = () => {
 
     const {isLoading, isError, data: structure, isPreviousData} = fetchUsersQuery;
 
-    interface OrderResponseDataType {
-        id: string;
-        description: string;
-        createdAt: string;
-    }
-
-    interface UserResponseDataType {
-        id: number;
-        name: string;
-        username: string;
-        email: string;
-        role: string;
-        profilePicture: string;
-        orders: OrderResponseDataType[];
-    }
-
-    const columns: ColumnsType<UserResponseDataType> = [
+    const columns: ColumnsType<UserResponse> = [
         {
             title: "Id",
             dataIndex: "id",
@@ -124,7 +112,7 @@ const Users = () => {
             title: "Orders",
             dataIndex: "orders",
             key: "orders",
-            render: (orders: OrderResponseDataType[]) => (
+            render: (orders: OrderResponse[]) => (
                 <>
                     {orders.length > 0
                         ? (<Tag color="gold" key="many-orders">{orders.length} Orders</Tag>)
