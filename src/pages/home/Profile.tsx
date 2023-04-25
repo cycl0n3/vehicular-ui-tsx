@@ -17,7 +17,9 @@ import {CheckCircleOutlined, CloseCircleOutlined, PlusCircleTwoTone, SyncOutline
 import NotificationContext from "../../context/NotificationContext";
 
 import {OrderResponse} from "../../types/OrderResponse";
+
 import {DEFAULT_USER_RESPONSE} from "../../types/UserResponse";
+
 import {DEFAULT_ORDER_PAGE_RESPONSE} from "../../types/OrderPageResponse";
 
 const Profile = () => {
