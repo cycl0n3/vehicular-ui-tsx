@@ -1,12 +1,10 @@
 import React, {useContext, useEffect} from "react";
 
-import {useNavigate} from "react-router-dom";
-
 import UserContext from "../../context/UserContext";
 
 import {connection} from "../../base/Connection";
 
-import {Avatar, Descriptions, Skeleton, Table, Tag, Typography} from "antd";
+import {Avatar, Badge, Skeleton, Table, Tag, Typography} from "antd";
 
 import type {ColumnsType} from "antd/es/table";
 
@@ -22,18 +20,16 @@ import NotificationContext from "../../context/NotificationContext";
 
 import {UserResponse} from "../../types/UserResponse";
 
-import {OrderResponse} from "../../types/OrderResponse";
 import {DEFAULT_USER_PAGE_RESPONSE} from "../../types/UserPageResponse";
 
 const Users = () => {
-    const navigate = useNavigate();
 
     const {user} = useContext(UserContext);
 
     const notificationContext = useContext(NotificationContext);
 
     const [page, setPage] = React.useState<number>(0);
-    const [size, setSize] = React.useState<number>(15);
+    const [size, setSize] = React.useState<number>(5);
 
     const fetchUsersQuery = useQuery({
         queryKey: ["fetchUsersQuery:Users", user, page, size],
@@ -57,6 +53,7 @@ const Users = () => {
         keepPreviousData: true,
         refetchOnWindowFocus: false,
         refetchOnReconnect: true,
+        enabled: !!user,
         onError: (error: any) => {
             if (error.message) {
                 notificationContext.error(error.message);
@@ -83,8 +80,8 @@ const Users = () => {
             render: (profilePicture: string) => (
                 <>
                     {profilePicture
-                        ? <Avatar src={`data:image/jpg;base64,${profilePicture}`} />
-                        : <Avatar icon={<UserOutlined/>} /> }
+                        ? <Avatar src={`data:image/jpg;base64,${profilePicture}`}/>
+                        : <Avatar icon={<UserOutlined/>}/>}
                 </>
             )
         },
@@ -105,15 +102,13 @@ const Users = () => {
         },
         {
             title: "Orders",
-            dataIndex: "orders",
-            key: "orders",
-            render: (orders: OrderResponse[]) => (
-                <>
-                    {orders.length > 0
-                        ? (<Tag color="gold" key="many-orders">{orders.length} Orders</Tag>)
-                        : (<Tag color="lightgray" key="no-orders">{orders.length} Orders</Tag> )}
+            dataIndex: "orderCount",
+            key: "orderCount",
+            render: (orderCount: number) => {
+                return <>
+                    <Badge count={orderCount} style={{backgroundColor: 'green'}} showZero={true}/>
                 </>
-            ),
+            },
         },
         {
             title: "Role",
@@ -130,9 +125,9 @@ const Users = () => {
     return (
         <div>
             {isLoading && (<>
-                <Skeleton active />
-                <Skeleton active />
-                <Skeleton active />
+                <Skeleton active/>
+                <Skeleton active/>
+                <Skeleton active/>
             </>)}
 
             {isError && (
@@ -140,12 +135,12 @@ const Users = () => {
             )}
 
             {structure && (<>
-               <Typography.Title level={4}>Users</Typography.Title>
+                <Typography.Title level={4}>Users</Typography.Title>
 
                 <Table columns={columns} dataSource={structure.users} pagination={{
                     defaultPageSize: size,
                     showSizeChanger: true,
-                    pageSizeOptions: ["15", "30", "45", "60"],
+                    pageSizeOptions: ["5", "10", "20", "50", "100"],
                     pageSize: structure.itemsPerPage,
                     total: structure.totalItems,
                     current: structure.currentPage + 1,
@@ -157,7 +152,7 @@ const Users = () => {
                     onShowSizeChange: (current: number, size: number) => {
                         setSize(() => size);
                     }
-                }} />
+                }}/>
             </>)}
         </div>
     );
