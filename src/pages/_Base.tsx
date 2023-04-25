@@ -79,6 +79,7 @@ const Base = () => {
         },
         refetchOnWindowFocus: false,
         refetchOnReconnect: true,
+        enabled: !!user,
     });
 
     const {data} = fetchMeQuery;
@@ -135,7 +136,7 @@ const Base = () => {
                                     }
                                 }/>}
 
-                    {user && (!data || !data.profilePicture) &&
+                    {user && !(data && data.profilePicture) &&
                         <Avatar size="large"
                                 style={{"cursor": "pointer"}}
                                 icon={<UserOutlined/>}
@@ -177,7 +178,7 @@ const Base = () => {
                 <div
                     style={{padding: 24, minHeight: 380, background: colorBgContainer}}
                 >
-                    <Outlet/>
+                    <Outlet />
                 </div>
             </Content>
 
