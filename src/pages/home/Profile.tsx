@@ -12,9 +12,7 @@ import {ADMIN_ROLE} from "../../base/SiteRoutes";
 
 import Table, {ColumnsType} from "antd/es/table";
 
-import {PlusCircleTwoTone} from "@ant-design/icons";
-
-import {AxiosResponse} from "axios";
+import {CheckCircleOutlined, CloseCircleOutlined, PlusCircleTwoTone, SyncOutlined} from "@ant-design/icons";
 
 import NotificationContext from "../../context/NotificationContext";
 
@@ -71,6 +69,36 @@ const Profile = () => {
             title: "Description",
             dataIndex: "description",
             key: "description",
+        },
+        {
+            title: "Status",
+            dataIndex: "status",
+            key: "status",
+            render: (status: number) => {
+                let color = "processing";
+                let message = "accepted";
+                let icon = <SyncOutlined />;
+
+                if (status === -1) {
+                    icon = <CloseCircleOutlined />;
+                    message = "rejected";
+                    color = "error";
+                } else if(status === 0) {
+                    icon = <SyncOutlined />;
+                    message = "processing";
+                    color = "processing";
+                }
+                else if (status === 1) {
+                    icon = <CheckCircleOutlined />;
+                    message = "accepted";
+                    color = "success";
+                }
+                return (
+                    <Tag icon={icon} color={color} key={status}>
+                        {message.toUpperCase()}
+                    </Tag>
+                );
+            }
         },
         {
             title: "Created At",

@@ -15,7 +15,7 @@ type UserContextType = {
 
 const UserContext = React.createContext<UserContextType>({} as UserContextType);
 
-const UserContextProvider = ({children}: {children: ReactNode}): JSX.Element => {
+const UserContextProvider = ({children}: {children: ReactNode}) => {
     useEffect(() => {
         const user = getUser();
         setUser(user);
@@ -23,7 +23,7 @@ const UserContextProvider = ({children}: {children: ReactNode}): JSX.Element => 
 
     const [localUser, setUser] = React.useState<IUser | null>(null);
 
-    const getUser = (): IUser | null => {
+    const getUser = () => {
         try {
             const userStr = localStorage.getItem('user') || '';
             return JSON.parse(userStr) as IUser;
@@ -33,17 +33,17 @@ const UserContextProvider = ({children}: {children: ReactNode}): JSX.Element => 
         }
     }
 
-    const login = (user: IUser): void => {
+    const login = (user: IUser) => {
         localStorage.setItem('user', JSON.stringify(user));
         setUser(user);
     }
 
-    const logout = (): void => {
+    const logout = () => {
         localStorage.removeItem('user');
         setUser(null);
     }
 
-    const valid = (): boolean => {
+    const valid = () => {
         try {
             const userStr = localStorage.getItem('user') || '{}';
             const user= JSON.parse(userStr) as IUser;
