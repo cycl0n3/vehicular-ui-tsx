@@ -5,7 +5,7 @@ console.log("REDUX: user/index.ts");
 const initialState = {
     username: "",
     accessToken: "",
-}
+};
 
 const index = createSlice({
     name: 'user',

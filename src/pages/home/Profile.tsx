@@ -1,4 +1,4 @@
-import React, {useRef, useState, useContext, useEffect} from "react";
+import React, {useContext, useEffect, useRef, useState} from "react";
 
 import {Button, Descriptions, Form, FormInstance, Input, Modal, Tag, Typography,} from "antd";
 
@@ -17,6 +17,8 @@ import {CheckCircleOutlined, CloseCircleOutlined, PlusCircleTwoTone, SyncOutline
 import NotificationContext from "../../context/NotificationContext";
 
 import {OrderResponse} from "../../types/OrderResponse";
+import {DEFAULT_USER_RESPONSE} from "../../types/UserResponse";
+import {DEFAULT_ORDER_PAGE_RESPONSE} from "../../types/OrderPageResponse";
 
 const Profile = () => {
     const {user} = useContext(UserContext);
@@ -45,34 +47,19 @@ const Profile = () => {
 
                 return response.data;
             } catch (e) {
-                return {
-                    orders: [],
-                    currentPage: 0,
-                    totalItems: 0,
-                    totalPages: 0,
-                    itemsPerPage: 0,
-                };
+                return DEFAULT_ORDER_PAGE_RESPONSE;
             }
         }
     });
 
     const fetchMeQuery = useQuery({
         queryKey: ["fetchMeQuery:Profile", user],
-        queryFn: async (): Promise<any> => {
+        queryFn: async () => {
             try {
                 const response = await connection.findMe(user);
-                const data = response.data;
-
-                data.orders = data.orders.map((order: any) => {
-                    return {
-                        ...order,
-                        key: order.id,
-                    };
-                });
-
-                return data;
+                return response.data;
             } catch (e) {
-                return [];
+                return DEFAULT_USER_RESPONSE;
             }
         },
         refetchOnWindowFocus: false,

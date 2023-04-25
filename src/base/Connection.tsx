@@ -8,13 +8,14 @@ import {PageRequest} from "../types/PageRequest";
 
 import {OrderPageResponse} from "../types/OrderPageResponse";
 import {UserPageResponse} from "../types/UserPageResponse";
+import {UserResponse} from "../types/UserResponse";
 
 const instance = axios.create({
     baseURL: config.url.API_BASE_URL + "/" +config.url.API + "/" +config.url.API_VERSION,
 });
 
 const authenticate = (username: string, password: string) => {
-    return instance.post(
+    return instance.post<User>(
         "/auth/authenticate",
         {
             username,
@@ -29,7 +30,7 @@ const authenticate = (username: string, password: string) => {
 };
 
 const register = (title: string, name: string, username: string, age: number, email: string, password: string) => {
-    return instance.post(
+    return instance.post<User>(
         "/auth/register",
         {
             title,
@@ -50,7 +51,7 @@ const register = (title: string, name: string, username: string, age: number, em
 const findMe = (user: User | null) => {
     if (!user) return Promise.reject("User is null");
 
-    return instance.get("/users/me", {
+    return instance.get<UserResponse>("/users/me", {
         headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${user.accessToken}`,

@@ -23,6 +23,7 @@ import NotificationContext from "../../context/NotificationContext";
 import {UserResponse} from "../../types/UserResponse";
 
 import {OrderResponse} from "../../types/OrderResponse";
+import {DEFAULT_USER_PAGE_RESPONSE} from "../../types/UserPageResponse";
 
 const Users = () => {
     const navigate = useNavigate();
@@ -50,13 +51,7 @@ const Users = () => {
 
                 return response.data;
             } catch (e) {
-                return {
-                    users: [],
-                    currentPage: 0,
-                    totalItems: 0,
-                    totalPages: 0,
-                    itemsPerPage: 0,
-                };
+                return DEFAULT_USER_PAGE_RESPONSE;
             }
         },
         keepPreviousData: true,

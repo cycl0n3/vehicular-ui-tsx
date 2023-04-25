@@ -4,3 +4,10 @@ export interface OrderResponse {
     createdAt: string;
     status: number;
 }
+
+export const DEFAULT_ORDER_RESPONSE: OrderResponse = {
+    id: "",
+    description: "",
+    createdAt: "",
+    status: 0
+}
