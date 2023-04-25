@@ -14,15 +14,17 @@ import Table, {ColumnsType} from "antd/es/table";
 
 import {OrderResponse} from "../../../types/OrderResponse";
 
-import {CheckCircleOutlined, CloseCircleOutlined, PlusCircleTwoTone, SyncOutlined} from "@ant-design/icons";
+import {PlusCircleTwoTone} from "@ant-design/icons";
 
-import {Button, Form, FormInstance, Input, Modal, Skeleton, Tag, Typography} from "antd";
+import {Button, Form, FormInstance, Input, Modal, Skeleton, Typography} from "antd";
 
 import {format} from "date-fns";
 
-const Orders = ({user}: {user: User}) => {
+import OrderStatus from "./OrderStatus";
 
-    const notificationContext= useContext(NotificationContext);
+const Orders = ({user}: { user: User }) => {
+
+    const notificationContext = useContext(NotificationContext);
 
     const [page, setPage] = React.useState<number>(0);
     const [size, setSize] = React.useState<number>(5);
@@ -37,7 +39,7 @@ const Orders = ({user}: {user: User}) => {
             try {
                 const response = await connection.findMyOrders(user, {page, size});
 
-                response.data.orders = response.data.orders.map((order: any) => {
+                response.data.orders = response.data.orders.map((order: OrderResponse) => {
                     return {
                         ...order,
                         key: order.id,
@@ -80,29 +82,7 @@ const Orders = ({user}: {user: User}) => {
             dataIndex: "status",
             key: "status",
             render: (status: number) => {
-                let color = "processing";
-                let message = "accepted";
-                let icon = <SyncOutlined />;
-
-                if (status === -1) {
-                    icon = <CloseCircleOutlined />;
-                    message = "rejected";
-                    color = "error";
-                } else if(status === 0) {
-                    icon = <SyncOutlined />;
-                    message = "processing";
-                    color = "processing";
-                }
-                else if (status === 1) {
-                    icon = <CheckCircleOutlined />;
-                    message = "accepted";
-                    color = "success";
-                }
-                return (
-                    <Tag icon={icon} color={color} key={status}>
-                        {message.toUpperCase()}
-                    </Tag>
-                );
+                return <OrderStatus status={status}/>;
             }
         },
         {
@@ -173,26 +153,26 @@ const Orders = ({user}: {user: User}) => {
                 <Form
                     ref={orderDialogForm}
                     name="order-form"
-                    labelCol={{ span: 8 }}
-                    wrapperCol={{ span: 16 }}
-                    style={{ maxWidth: 600 }}
-                    initialValues={{ remember: true }}
+                    labelCol={{span: 8}}
+                    wrapperCol={{span: 16}}
+                    style={{maxWidth: 600}}
+                    initialValues={{remember: true}}
                     autoComplete="off"
                 >
                     <Form.Item
                         label="Order Description"
                         name="description"
-                        rules={[{ required: true, message: 'Please enter order description' }]}
+                        rules={[{required: true, message: 'Please enter order description'}]}
                     >
-                        <Input />
+                        <Input/>
                     </Form.Item>
                 </Form>
             </Modal>
 
             {isOrdersLoading && (<>
-                <Skeleton active />
-                <Skeleton active />
-                <Skeleton active />
+                <Skeleton active/>
+                <Skeleton active/>
+                <Skeleton active/>
             </>)}
 
             {isOrdersError && (<>
@@ -215,7 +195,7 @@ const Orders = ({user}: {user: User}) => {
                     onShowSizeChange: (current: number, size: number) => {
                         setSize(() => size);
                     }
-                }} />
+                }}/>
             </>)}
         </div>
     );

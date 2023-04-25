@@ -1,8 +1,6 @@
-import React, {useContext, useEffect, useRef, useState} from "react";
+import React, {useContext} from "react";
 
-import {Button, Form, FormInstance, Input, Modal, Tag, Typography,} from "antd";
-
-import {Skeleton} from 'antd';
+import {Skeleton, Typography,} from "antd";
 
 import {useQuery} from "@tanstack/react-query";
 
@@ -10,19 +8,9 @@ import UserContext from "../../../context/UserContext";
 
 import {connection} from "../../../base/Connection";
 
-import Table, {ColumnsType} from "antd/es/table";
-
-import {CheckCircleOutlined, CloseCircleOutlined, PlusCircleTwoTone, SyncOutlined} from "@ant-design/icons";
-
-import {format} from 'date-fns';
-
 import NotificationContext from "../../../context/NotificationContext";
 
-import {OrderResponse} from "../../../types/OrderResponse";
-
 import {DEFAULT_USER_RESPONSE} from "../../../types/UserResponse";
-
-import {DEFAULT_ORDER_PAGE_RESPONSE} from "../../../types/OrderPageResponse";
 
 import ProfileDescription from "./ProfileDescription";
 
@@ -31,7 +19,7 @@ import Orders from "./Orders";
 const Profile = () => {
     const {user} = useContext(UserContext);
 
-    const notificationContext= useContext(NotificationContext);
+    const notificationContext = useContext(NotificationContext);
 
     const fetchMeQuery = useQuery({
         queryKey: ["fetchMeQuery:Profile", user],
@@ -60,7 +48,7 @@ const Profile = () => {
     return (
         <div>
             {isProfileLoading && (<>
-                <Skeleton active />
+                <Skeleton active/>
             </>)}
 
             {isProfileError && (<>
@@ -68,11 +56,11 @@ const Profile = () => {
             </>)}
 
             {profileData && (
-                <ProfileDescription user={profileData} />
+                <ProfileDescription user={profileData}/>
             )}
 
             {user && (<>
-                <Orders user={user} />
+                <Orders user={user}/>
             </>)}
         </div>
     );

@@ -6,7 +6,7 @@ import UserContext from "../../context/UserContext";
 
 import {connection} from "../../base/Connection";
 
-import {Avatar, Descriptions, Table, Tag} from "antd";
+import {Avatar, Descriptions, Skeleton, Table, Tag, Typography} from "antd";
 
 import type {ColumnsType} from "antd/es/table";
 
@@ -129,21 +129,18 @@ const Users = () => {
 
     return (
         <div>
-            {isLoading && (
-                <Descriptions title="User List">
-                    <Descriptions.Item label="Status">Loading...</Descriptions.Item>
-                </Descriptions>
-            )}
+            {isLoading && (<>
+                <Skeleton active />
+                <Skeleton active />
+                <Skeleton active />
+            </>)}
 
             {isError && (
-                <Descriptions title="User List">
-                    <Descriptions.Item label="Status">Error</Descriptions.Item>
-                </Descriptions>
+                <Typography.Text type="danger">Error fetching users</Typography.Text>
             )}
 
             {structure && (<>
-                <Descriptions title="User List">
-                </Descriptions>
+               <Typography.Title level={4}>Users</Typography.Title>
 
                 <Table columns={columns} dataSource={structure.users} pagination={{
                     defaultPageSize: size,
