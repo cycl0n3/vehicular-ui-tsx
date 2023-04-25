@@ -52,7 +52,7 @@ const SignIn = () => {
     };
 
     useEffect(() => {
-        logout();
+        logout(); dispatch(USER.logout());
     }, []);
 
     const navigate = useNavigate();

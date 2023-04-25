@@ -1,26 +1,28 @@
 import React, {useContext, useEffect, useRef, useState} from "react";
 
-import {Button, Descriptions, Form, FormInstance, Input, Modal, Tag, Typography,} from "antd";
+import {Button, Form, FormInstance, Input, Modal, Tag, Typography,} from "antd";
+
+import { Skeleton } from 'antd';
 
 import {useQuery} from "@tanstack/react-query";
 
-import UserContext from "../../context/UserContext";
+import UserContext from "../../../context/UserContext";
 
-import {connection} from "../../base/Connection";
-
-import {ADMIN_ROLE} from "../../base/SiteRoutes";
+import {connection} from "../../../base/Connection";
 
 import Table, {ColumnsType} from "antd/es/table";
 
 import {CheckCircleOutlined, CloseCircleOutlined, PlusCircleTwoTone, SyncOutlined} from "@ant-design/icons";
 
-import NotificationContext from "../../context/NotificationContext";
+import NotificationContext from "../../../context/NotificationContext";
 
-import {OrderResponse} from "../../types/OrderResponse";
+import {OrderResponse} from "../../../types/OrderResponse";
 
-import {DEFAULT_USER_RESPONSE} from "../../types/UserResponse";
+import {DEFAULT_USER_RESPONSE} from "../../../types/UserResponse";
 
-import {DEFAULT_ORDER_PAGE_RESPONSE} from "../../types/OrderPageResponse";
+import {DEFAULT_ORDER_PAGE_RESPONSE} from "../../../types/OrderPageResponse";
+
+import ProfileDescription from "./ProfileDescription";
 
 const Profile = () => {
     const {user} = useContext(UserContext);
@@ -51,7 +53,13 @@ const Profile = () => {
             } catch (e) {
                 return DEFAULT_ORDER_PAGE_RESPONSE;
             }
-        }
+        },
+        refetchOnWindowFocus: false,
+        refetchOnReconnect: true,
+        enabled: user !== null,
+        onError: (error: any) => {
+            notificationContext.error(error.message);
+        },
     });
 
     const fetchMeQuery = useQuery({
@@ -66,6 +74,7 @@ const Profile = () => {
         },
         refetchOnWindowFocus: false,
         refetchOnReconnect: true,
+        enabled: user !== null,
         onError: (error: any) => {
             notificationContext.error(error.message);
         },
@@ -170,58 +179,40 @@ const Profile = () => {
 
     return (
         <div>
-            {isProfileLoading && (
-                <Descriptions title="User Info">
-                    <Descriptions.Item label="Status">Loading...</Descriptions.Item>
-                </Descriptions>
-            )}
+            {isProfileLoading && (<>
+                    <Skeleton active />
+            </>)}
 
-            {isProfileError && (
-                <Descriptions title="User Info">
-                    <Descriptions.Item label="Status">Error</Descriptions.Item>
-                </Descriptions>
+            {isProfileError && (<>
+                    <Typography.Text type="danger">Error loading profile.</Typography.Text>
+                </>
             )}
 
             {profileData && (
-                <Descriptions title="User Info">
-                    <Descriptions.Item label="Username">
-                        {profileData.username}
-                    </Descriptions.Item>
-                    <Descriptions.Item label="Name">
-                        {profileData.title} {profileData.name}
-                    </Descriptions.Item>
-                    <Descriptions.Item label="Age">
-                        {profileData.age}
-                    </Descriptions.Item>
-                    <Descriptions.Item label="Email">
-                        {profileData.email}
-                    </Descriptions.Item>
-                    <Descriptions.Item label="Role">
-                        <Tag
-                            color={profileData.role === ADMIN_ROLE ? "red" : "green"}
-                            key={profileData.role}
-                        >
-                            {profileData.role}
-                        </Tag>
-                    </Descriptions.Item>
-                </Descriptions>
+                <ProfileDescription user={profileData} />
             )}
+
+            <Typography.Title level={4} style={{margin: 0}}>
+                Orders
+                <Button
+                    type="text"
+                    shape="circle"
+                    icon={<PlusCircleTwoTone size={25}/>}
+                    size="large"
+                    onClick={() => {
+                        setOrderDialogOpen(true);
+                    }}
+                />
+            </Typography.Title>
+
+            {isOrdersLoading && (<>
+                <Skeleton active />
+                <Skeleton active />
+                <Skeleton active />
+            </>)}
 
             {ordersData && (
                 <>
-                    <Typography.Title level={4} style={{margin: 0}}>
-                        Order Info
-                        <Button
-                            type="text"
-                            shape="circle"
-                            icon={<PlusCircleTwoTone size={25}/>}
-                            size="large"
-                            onClick={() => {
-                                setOrderDialogOpen(true);
-                            }}
-                        />
-                    </Typography.Title>
-
                     <Table columns={columns} dataSource={ordersData.orders} pagination={{
                         defaultPageSize: size,
                         showSizeChanger: true,
@@ -253,7 +244,6 @@ const Profile = () => {
                             wrapperCol={{ span: 16 }}
                             style={{ maxWidth: 600 }}
                             initialValues={{ remember: true }}
-                            // onFinish={onFinish}
                             autoComplete="off"
                         >
                             <Form.Item
