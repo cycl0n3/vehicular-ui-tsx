@@ -4,17 +4,7 @@ import {Typography} from "antd";
 
 const {Title, Paragraph} = Typography;
 
-import { useAppDispatch, useAppSelector } from "../../redux/store";
-
-const Home = (): JSX.Element => {
-    const dispatch = useAppDispatch();
-
-    const user = useAppSelector(state => state.user);
-
-    useEffect(() => {
-        console.log('user: ', user);
-    }, []);
-
+const Home = () => {
     return (
         <div>
             <Title>

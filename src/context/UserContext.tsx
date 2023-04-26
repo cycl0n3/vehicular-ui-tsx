@@ -6,7 +6,7 @@ import React, {
 import {UserAuth} from '../types/UserAuth';
 
 type UserContextType = {
-    user: UserAuth | null;
+    userAuth: UserAuth | null;
     valid: () => boolean;
     login: (user: UserAuth) => void;
     logout: () => void;
@@ -58,7 +58,7 @@ const UserContextProvider = ({children}: {children: ReactNode}) => {
 
     return (
         <UserContext.Provider
-            value={{user: localUser, /*getUser,*/ valid, login, logout}}>
+            value={{userAuth: localUser, /*getUser,*/ valid, login, logout}}>
             {children}
         </UserContext.Provider>
     )

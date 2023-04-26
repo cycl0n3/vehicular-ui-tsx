@@ -36,4 +36,4 @@ const ProfileDescription = ({ user }: { user: UserResponse }) => {
     );
 }
 
-export default memo( ProfileDescription );
+export default ProfileDescription;

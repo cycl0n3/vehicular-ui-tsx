@@ -201,4 +201,4 @@ const Orders = ({user}: { user: UserAuth }) => {
     );
 };
 
-export default memo( Orders );
+export default Orders;

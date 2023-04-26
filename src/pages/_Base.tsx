@@ -18,6 +18,8 @@ import {AxiosResponse} from "axios";
 
 import NotificationContext from "../context/NotificationContext";
 
+import {DEFAULT_USER_RESPONSE, UserResponse} from "../types/UserResponse";
+
 const {Header, Content, Footer} = Layout;
 
 const Base = () => {
@@ -25,7 +27,9 @@ const Base = () => {
         token: {colorBgContainer},
     } = theme.useToken();
 
-    const {user} = useContext(UserContext);
+    const {userAuth} = useContext(UserContext);
+
+    const [user, setUser] = useState<UserResponse>(DEFAULT_USER_RESPONSE);
 
     const notificationContext = useContext(NotificationContext);
 
@@ -45,41 +49,52 @@ const Base = () => {
 
 
     useEffect(() => {
+        console.log("Base: useEffect: siteRoutes: ", siteRoutes);
+
         setSitesRoutesFiltered(siteRoutes.filter((route: SiteRoute) => {
             return route.roles.includes(GUEST_ROLE);
         }));
     }, []);
 
     useEffect(() => {
-        if (user) {
+        console.log("Base: useEffect: userAuth: ", userAuth);
+
+        if (userAuth) {
             fetchMeQuery.refetch();
         } else {
             setSitesRoutesFiltered(siteRoutes.filter((route: SiteRoute) => {
                 return route.roles.includes(GUEST_ROLE);
             }));
         }
+    }, [userAuth]);
+
+    useEffect(() => {
+        console.log("Base: useEffect: user: ", user);
     }, [user]);
 
+
     const fetchMeQuery = useQuery({
-        queryKey: ["fetchMeQuery:_Base", user],
-        queryFn: async (): Promise<any> => {
+        queryKey: ["fetchMeQuery:_Base", userAuth],
+        queryFn: async () => {
             try {
-                const response = await connection.findMe(user);
+                const response = await connection.findMe(userAuth);
                 const data = response.data;
 
                 setSitesRoutesFiltered(siteRoutes.filter((route: SiteRoute) => {
                     return route.roles.includes(data.role);
                 }));
 
+                setUser(data);
+
                 return response.data;
             } catch (e) {
-                return {};
+                return DEFAULT_USER_RESPONSE;
             } finally {
             }
         },
         refetchOnWindowFocus: false,
         refetchOnReconnect: true,
-        enabled: !!user,
+        enabled: !!userAuth,
     });
 
     const {data} = fetchMeQuery;
@@ -97,7 +112,7 @@ const Base = () => {
 
         setFileUploadDialogConfirmLoading(true);
 
-        connection.uploadProfilePicture(user, file).then((response: AxiosResponse<any, any>) => {
+        connection.uploadProfilePicture(userAuth, file).then((response: AxiosResponse<any, any>) => {
             notificationContext.success("Profile picture uploaded successfully.");
             setFileUploadDialogOpen(false);
             fileUploadDialogForm.current.resetFields();
@@ -126,7 +141,7 @@ const Base = () => {
                         background: "#001529",
                     }}
                 >
-                    {user && (data && data.profilePicture) &&
+                    {userAuth && (data && data.profilePicture) &&
                         <Avatar size="large"
                                 style={{"cursor": "pointer"}}
                                 src={`data:image/jpg;base64,${data.profilePicture}`}
@@ -136,7 +151,7 @@ const Base = () => {
                                     }
                                 }/>}
 
-                    {user && !(data && data.profilePicture) &&
+                    {userAuth && !(data && data.profilePicture) &&
                         <Avatar size="large"
                                 style={{"cursor": "pointer"}}
                                 icon={<UserOutlined/>}
@@ -146,7 +161,7 @@ const Base = () => {
                                     }
                                 }/>}
 
-                    {!user &&
+                    {!userAuth &&
                         <Avatar size="large"
                                 style={{"cursor": "default"}}
                                 icon={<UserOutlined/>}
@@ -157,7 +172,6 @@ const Base = () => {
                     id="menu"
                     theme="dark"
                     mode="horizontal"
-                    // disabled={loading}
                     selectedKeys={[pageRoute.key]}
                     defaultSelectedKeys={[pageRoute.key]}
                     onSelect={
@@ -176,7 +190,7 @@ const Base = () => {
 
             <Content className="site-layout" style={{padding: "0 50px"}}>
                 <div style={{padding: 24, minHeight: 380, background: colorBgContainer}}>
-                    <Outlet />
+                    <Outlet context={user} />
                 </div>
             </Content>
 

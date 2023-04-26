@@ -24,7 +24,7 @@ import {DEFAULT_USER_PAGE_RESPONSE} from "../../types/UserPageResponse";
 
 const Users = () => {
 
-    const {user} = useContext(UserContext);
+    const {userAuth} = useContext(UserContext);
 
     const notificationContext = useContext(NotificationContext);
 
@@ -32,10 +32,10 @@ const Users = () => {
     const [size, setSize] = React.useState<number>(5);
 
     const fetchUsersQuery = useQuery({
-        queryKey: ["fetchUsersQuery:Users", user, page, size],
+        queryKey: ["fetchUsersQuery:Users", userAuth, page, size],
         queryFn: async () => {
             try {
-                const response = await connection.findAllUsers(user, {page, size});
+                const response = await connection.findAllUsers(userAuth, {page, size});
 
                 response.data.users = response.data.users.map((user: any) => {
                     return {
@@ -53,7 +53,7 @@ const Users = () => {
         keepPreviousData: true,
         refetchOnWindowFocus: false,
         refetchOnReconnect: true,
-        enabled: !!user,
+        enabled: !!userAuth,
         onError: (error: any) => {
             if (error.message) {
                 notificationContext.error(error.message);
