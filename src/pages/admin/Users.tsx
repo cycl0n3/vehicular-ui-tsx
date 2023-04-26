@@ -4,7 +4,7 @@ import UserContext from "../../context/UserContext";
 
 import {connection} from "../../base/Connection";
 
-import {Avatar, Badge, Skeleton, Table, Tag, Typography} from "antd";
+import {Avatar, Badge, List, Skeleton, Table, Tag, Typography} from "antd";
 
 import type {ColumnsType} from "antd/es/table";
 
@@ -102,11 +102,28 @@ const Users = () => {
         },
         {
             title: "Orders",
-            dataIndex: "orderCount",
-            key: "orderCount",
-            render: (orderCount: number) => {
+            dataIndex: "orderCounts",
+            key: "orderCounts",
+            render: (orderCounts: {
+                orderCount: number;
+                acceptedOrderCount: number;
+                rejectedOrderCount: number;
+                pendingOrderCount: number;
+            }) => {
                 return <>
-                    <Badge count={orderCount} style={{backgroundColor: 'green'}} showZero={true}/>
+                    <Badge.Ribbon text={`Total: ${orderCounts.orderCount}`}>
+                        <List size="default" bordered>
+                            <List.Item>
+                                <Typography.Text type="success">{orderCounts.acceptedOrderCount} Accepted</Typography.Text>
+                            </List.Item>
+                            <List.Item>
+                                <Typography.Text type="danger">{orderCounts.rejectedOrderCount} Rejected</Typography.Text>
+                            </List.Item>
+                            <List.Item>
+                                <Typography.Text type="warning">{orderCounts.pendingOrderCount} Pending</Typography.Text>
+                            </List.Item>
+                        </List>
+                    </Badge.Ribbon>
                 </>
             },
         },

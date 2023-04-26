@@ -9,7 +9,12 @@ export interface UserResponse {
     email: string;
     role: string;
     profilePicture: string;
-    orderCount: number;
+    orderCounts: {
+        orderCount: number;
+        acceptedOrderCount: number;
+        rejectedOrderCount: number;
+        pendingOrderCount: number;
+    };
 }
 
 export const DEFAULT_USER_RESPONSE: UserResponse = {
@@ -21,5 +26,10 @@ export const DEFAULT_USER_RESPONSE: UserResponse = {
     email: "",
     role: "",
     profilePicture: "",
-    orderCount: 0
+    orderCounts: {
+        orderCount: 0,
+        acceptedOrderCount: 0,
+        rejectedOrderCount: 0,
+        pendingOrderCount: 0,
+    },
 }
