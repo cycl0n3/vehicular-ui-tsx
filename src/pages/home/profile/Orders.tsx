@@ -1,6 +1,6 @@
-import React, {useContext, useEffect, useRef, useState} from "react";
+import React, {memo, useContext, useEffect, useRef, useState} from "react";
 
-import {User} from "../../../types/User";
+import {UserAuth} from "../../../types/UserAuth";
 
 import NotificationContext from "../../../context/NotificationContext";
 
@@ -22,7 +22,7 @@ import {format} from "date-fns";
 
 import OrderStatus from "./OrderStatus";
 
-const Orders = ({user}: { user: User }) => {
+const Orders = ({user}: { user: UserAuth }) => {
 
     const notificationContext = useContext(NotificationContext);
 
@@ -201,4 +201,4 @@ const Orders = ({user}: { user: User }) => {
     );
 };
 
-export default Orders;
+export default memo( Orders );

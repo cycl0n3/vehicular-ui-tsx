@@ -175,9 +175,7 @@ const Base = () => {
             </Header>
 
             <Content className="site-layout" style={{padding: "0 50px"}}>
-                <div
-                    style={{padding: 24, minHeight: 380, background: colorBgContainer}}
-                >
+                <div style={{padding: 24, minHeight: 380, background: colorBgContainer}}>
                     <Outlet />
                 </div>
             </Content>
@@ -204,7 +202,7 @@ const Base = () => {
                         rules={[{required: true, message: 'Please choose a profile picture'}]}
                     >
                         <Input type="file" onChange={
-                            (e): void => {
+                            (e) => {
                                 if (e.target.files && e.target.files.length > 0) {
                                     setFile(e.target.files[0]);
                                 }

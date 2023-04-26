@@ -1,4 +1,4 @@
-import React from "react";
+import React, {memo} from "react";
 
 import {Descriptions, Tag} from "antd";
 
@@ -36,4 +36,4 @@ const ProfileDescription = ({ user }: { user: UserResponse }) => {
     );
 }
 
-export default ProfileDescription;
+export default memo( ProfileDescription );

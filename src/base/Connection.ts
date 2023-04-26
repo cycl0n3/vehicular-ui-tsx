@@ -2,7 +2,7 @@ import axios from "axios";
 
 import {config} from "./Constants";
 
-import {User} from "../types/User";
+import {UserAuth} from "../types/UserAuth";
 
 import {PageRequest} from "../types/PageRequest";
 
@@ -17,7 +17,7 @@ const instance = axios.create({
 });
 
 const authenticate = (username: string, password: string) => {
-    return instance.post<User>(
+    return instance.post<UserAuth>(
         "/auth/authenticate",
         {
             username,
@@ -32,7 +32,7 @@ const authenticate = (username: string, password: string) => {
 };
 
 const register = (title: string, name: string, username: string, age: number, email: string, password: string) => {
-    return instance.post<User>(
+    return instance.post<UserAuth>(
         "/auth/register",
         {
             title,
@@ -50,8 +50,8 @@ const register = (title: string, name: string, username: string, age: number, em
     );
 };
 
-const findMe = (user: User | null) => {
-    if (!user) return Promise.reject("User is null");
+const findMe = (user: UserAuth | null) => {
+    if (!user) return Promise.reject("UserAuth is null");
 
     return instance.get<UserResponse>("/users/me", {
         headers: {
@@ -61,8 +61,8 @@ const findMe = (user: User | null) => {
     });
 };
 
-const findMyOrders = (user: User | null, pageRequest: PageRequest) => {
-    if (!user) return Promise.reject("User is null");
+const findMyOrders = (user: UserAuth | null, pageRequest: PageRequest) => {
+    if (!user) return Promise.reject("UserAuth is null");
 
     return instance.get<OrderPageResponse>("/orders/me", {
         params: {
@@ -76,8 +76,8 @@ const findMyOrders = (user: User | null, pageRequest: PageRequest) => {
     });
 }
 
-const findAllUsers = (user: User | null, pageRequest: PageRequest) => {
-    if (!user) return Promise.reject("User is null");
+const findAllUsers = (user: UserAuth | null, pageRequest: PageRequest) => {
+    if (!user) return Promise.reject("UserAuth is null");
 
     return instance.get<UserPageResponse>("/users", {
         params: {
@@ -91,8 +91,8 @@ const findAllUsers = (user: User | null, pageRequest: PageRequest) => {
     });
 };
 
-const createOrder = (user: User | null, description: string) => {
-    if (!user) return Promise.reject("User is null");
+const createOrder = (user: UserAuth | null, description: string) => {
+    if (!user) return Promise.reject("UserAuth is null");
 
     return instance.post(
         "/orders",
@@ -108,8 +108,8 @@ const createOrder = (user: User | null, description: string) => {
     );
 }
 
-const uploadProfilePicture = (user: User | null, file: File) => {
-    if (!user) return Promise.reject("User is null");
+const uploadProfilePicture = (user: UserAuth | null, file: File) => {
+    if (!user) return Promise.reject("UserAuth is null");
 
     const formData = new FormData();
     formData.append("profile-picture", file);
