@@ -76,6 +76,22 @@ const findMyOrders = (user: UserAuth | null, pageRequest: PageRequest) => {
     });
 }
 
+const findAllOrders = (user: UserAuth | null, pageRequest: PageRequest, text: string) => {
+    if (!user) return Promise.reject("UserAuth is null");
+
+    return instance.get<OrderPageResponse>("/orders", {
+        params: {
+            page: pageRequest.page,
+            size: pageRequest.size,
+            text: text,
+        },
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user.accessToken}`,
+        }
+    });
+}
+
 const findAllUsers = (user: UserAuth | null, pageRequest: PageRequest) => {
     if (!user) return Promise.reject("UserAuth is null");
 
@@ -128,9 +144,10 @@ export const connection = {
     UPLOAD_PROFILE_PICTURE_URL,
     authenticate,
     register,
+    uploadProfilePicture,
     findMe,
+    findMyOrders,
     findAllUsers,
     createOrder,
-    uploadProfilePicture,
-    findMyOrders
+    findAllOrders,
 };
