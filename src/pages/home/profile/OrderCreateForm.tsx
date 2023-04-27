@@ -60,7 +60,7 @@ const OrderCreateForm = ({ user, open, onCreate, onError, onCancel }: OrderCreat
                 disabled={loading}
                 layout="vertical"
                 name="order_form_in_modal"
-                initialValues={{modifier: 'public'}}
+                // initialValues={{modifier: 'public'}}
             >
                 <Form.Item name="description" label="Description" rules={[{required: true, message: 'Please provide Description'}]} >
                     <TextArea rows={4} />

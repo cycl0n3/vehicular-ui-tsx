@@ -14,7 +14,7 @@ import Table, {ColumnsType} from "antd/es/table";
 
 import {OrderResponse} from "../../../types/OrderResponse";
 
-import {PlusCircleTwoTone} from "@ant-design/icons";
+import {CheckCircleOutlined, CloseCircleOutlined, PlusCircleTwoTone, SearchOutlined} from "@ant-design/icons";
 
 import {Button, Form, FormInstance, Input, Modal, Skeleton, Typography} from "antd";
 
@@ -24,6 +24,8 @@ import OrderStatus from "./OrderStatus";
 
 import OrderCreateForm from "./OrderCreateForm";
 
+import jwt_decode from "jwt-decode";
+
 const Orders = ({user, otherUsername}: { user: UserAuth, otherUsername: string }) => {
 
     const notificationContext = useContext(NotificationContext);
@@ -32,6 +34,8 @@ const Orders = ({user, otherUsername}: { user: UserAuth, otherUsername: string }
     const [size, setSize] = React.useState<number>(5);
 
     const [searchQuery, setSearchQuery] = React.useState<string>("");
+
+    const decoded: any = jwt_decode(user.accessToken);
 
     useEffect(() => {
         setPage(() => 0);
@@ -47,12 +51,28 @@ const Orders = ({user, otherUsername}: { user: UserAuth, otherUsername: string }
         queryKey: ["fetchOrdersQuery:Orders", user, otherUsername, searchQuery, page, size],
         queryFn: async () => {
             try {
-                const response = await connection.findOrdersByUser(user, otherUsername, searchQuery, {page, size});
+                let response;
+
+                const decoded: any = jwt_decode(user.accessToken);
+
+                if (decoded.rol[0] === "ADMIN") {
+                    if(!otherUsername) throw new Error("No otherUsername provided");
+                    response = await connection.findOrdersByUser(user, otherUsername, searchQuery, {page, size});
+                }
+                else if(decoded.rol[0] === "USER") {
+                    response = await connection.findMyOrders(user, searchQuery, {page, size});
+                } else {
+                    response = await connection.findMyOrders(user, searchQuery, {page, size});
+                }
 
                 response.data.orders = response.data.orders.map((order: OrderResponse) => {
                     return {
                         ...order,
                         key: order.id,
+                        action: {
+                            id: order.id,
+                            status: order.status,
+                        },
                     };
                 });
 
@@ -77,7 +97,7 @@ const Orders = ({user, otherUsername}: { user: UserAuth, otherUsername: string }
         isPreviousData: isOrdersPreviousData,
     } = fetchOrdersQuery;
 
-    const columns: ColumnsType<OrderResponse> = [
+    let columns: ColumnsType<OrderResponse> = [
         {
             title: "Id",
             dataIndex: "id",
@@ -104,7 +124,46 @@ const Orders = ({user, otherUsername}: { user: UserAuth, otherUsername: string }
                 return <Typography.Text>{format(new Date(createdAt), "dd/MM/yyyy HH:mm")}</Typography.Text>;
             }
         },
+        {
+            title: "Actions",
+            dataIndex: "action",
+            key: "action",
+            render: (action) => {
+
+                return <>
+                    {action.status === 0 && (<></>)}
+                    {action.status !== 0 && (<>
+                        <Button style={{color: "green"}} type="text" shape={"circle"} icon={<CheckCircleOutlined />} color={"green"} onClick={async () => {
+                            try {
+                                //await connection.approveOrder(user, action.id);
+                                //fetchOrdersQuery.refetch();
+                                notificationContext.success("Order approved successfully");
+                            } catch (e) {
+                                //notificationContext.error("Order completion failed (" + e.message + ")");
+                            }
+                        }} ></Button>
+
+                        <Button style={{color: "red"}} type="text" shape={"circle"} icon={<CloseCircleOutlined />} onClick={async () => {
+                            try {
+                                //await connection.rejectOrder(user, action.id);
+                                //fetchOrdersQuery.refetch();
+                                notificationContext.warning("Order rejected successfully");
+                            } catch (e) {
+                                //notificationContext.error("Order rejection failed (" + e.message + ")");
+                            }
+                        }} ></Button>
+                </>)}
+            </>}
+        }
     ];
+
+    columns = columns.filter((column) => {
+        if(column.key === "action") {
+            return decoded.rol[0] === "ADMIN";
+        }
+
+        return true;
+    });
 
     const [open, setOpen] = useState(false);
 

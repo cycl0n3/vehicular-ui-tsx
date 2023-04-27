@@ -1,4 +1,4 @@
-import React, {useContext} from "react";
+import React, {useContext, useEffect} from "react";
 
 import UserContext from "../../../context/UserContext";
 
@@ -20,7 +20,7 @@ const Profile = () => {
             <ProfileDescription user={user}/>
 
             {userAuth && (<>
-                <Orders user={userAuth}/>
+                <Orders user={userAuth} otherUsername={user.username}/>
             </>)}
         </div>
     );
