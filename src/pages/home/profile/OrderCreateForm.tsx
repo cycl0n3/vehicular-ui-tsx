@@ -8,6 +8,8 @@ import {connection} from "../../../base/Connection";
 
 import {UserAuth} from "../../../types/UserAuth";
 
+import jwt_decode from "jwt-decode";
+
 interface Values {
     description: string;
 }
@@ -26,6 +28,8 @@ const OrderCreateForm = ({ user, otherUsername, open, onCreate, onError, onCance
 
     const [loading, setLoading] = React.useState(false);
 
+    const decoded: any = jwt_decode(user.accessToken);
+
     return (
         <Modal
             open={open}
@@ -42,7 +46,15 @@ const OrderCreateForm = ({ user, otherUsername, open, onCreate, onError, onCance
                     .then((values) => {
                         setLoading(true);
 
-                        connection.createOrderForUser(user, otherUsername, values.description)
+                        let request;
+
+                        if(decoded.rol[0] === "ADMIN") {
+                            request = connection.createOrderForUser(user, otherUsername, values.description)
+                        } else {
+                            request = connection.createOrder(user, values.description);
+                        }
+
+                        request
                             .then(() => {
                                 form.resetFields();
                                 onCreate(values);
