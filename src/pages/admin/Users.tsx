@@ -95,6 +95,7 @@ const Users = () => {
             dataIndex: "username",
             key: "username",
             render: (username: string) => (
+                // TODO: On click of username, open a drawer with user orders
                 <a>
                     {username}
                 </a>
