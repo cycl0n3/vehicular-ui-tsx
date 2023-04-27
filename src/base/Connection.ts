@@ -142,6 +142,53 @@ const createOrder = (user: UserAuth | null, description: string) => {
     );
 }
 
+const createOrderForUser = (user: UserAuth | null, username: string, description: string) => {
+    if (!user) return Promise.reject("UserAuth is null");
+
+    return instance.post(
+        `/orders/${username}/create`,
+        {
+            description,
+        },
+        {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${user.accessToken}`,
+            },
+        }
+    );
+}
+
+const approveOrder = (user: UserAuth | null, orderId: string) => {
+    if (!user) return Promise.reject("UserAuth is null");
+
+    return instance.post(
+        `/orders/${orderId}/accept`,
+        {},
+        {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${user.accessToken}`,
+            },
+        }
+    );
+}
+
+const rejectOrder = (user: UserAuth | null, orderId: string) => {
+    if (!user) return Promise.reject("UserAuth is null");
+
+    return instance.post(
+        `/orders/${orderId}/reject`,
+        {},
+        {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${user.accessToken}`,
+            },
+        }
+    );
+}
+
 const uploadProfilePicture = (user: UserAuth | null, file: File) => {
     if (!user) return Promise.reject("UserAuth is null");
 
@@ -168,5 +215,8 @@ export const connection = {
     findAllUsers,
     createOrder,
     findAllOrders,
-    findOrdersByUser
+    findOrdersByUser,
+    createOrderForUser,
+    approveOrder,
+    rejectOrder,
 };

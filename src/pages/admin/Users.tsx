@@ -21,6 +21,7 @@ import NotificationContext from "../../context/NotificationContext";
 import {UserResponse} from "../../types/UserResponse";
 
 import {DEFAULT_USER_PAGE_RESPONSE} from "../../types/UserPageResponse";
+
 import Orders from "../home/profile/Orders";
 
 const Users = () => {
@@ -165,19 +166,30 @@ const Users = () => {
     const handleOk = () => {
         console.log('Clicked ok button', modalForm)
         setOpen(false);
-        // @ts-ignore
-        modalForm.current.resetFields();
+        fetchUsersQuery.refetch();
     };
 
     const handleCancel = () => {
         console.log('Clicked cancel button', modalForm)
         setOpen(false);
-        // @ts-ignore
-        modalForm.current.resetFields();
+        fetchUsersQuery.refetch();
     };
 
     return (
         <div>
+            <Form
+                layout='vertical'
+                style={{ maxWidth: 600 }}
+                onFinish={(values) => {
+                    setSearchQuery(() => values.searchQuery);
+                }}
+            >
+                <Form.Item label="Search" name="searchQuery">
+                    <Input placeholder="Enter search query here" />
+                </Form.Item>
+
+            </Form>
+
             {isLoading && (<>
                 <Skeleton active/>
                 <Skeleton active/>
@@ -193,19 +205,6 @@ const Users = () => {
             </Modal>}
 
             {structure && (<>
-                <Form
-                    layout='vertical'
-                    style={{ maxWidth: 600 }}
-                    onFinish={(values) => {
-                        setSearchQuery(() => values.searchQuery);
-                    }}
-                >
-                    <Form.Item label="Search" name="searchQuery">
-                        <Input placeholder="Enter search query here" />
-                    </Form.Item>
-
-                </Form>
-
                 <Typography.Title level={4}>Users</Typography.Title>
 
                 <Table columns={columns} dataSource={structure.users} pagination={{

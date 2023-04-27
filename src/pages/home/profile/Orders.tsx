@@ -53,8 +53,6 @@ const Orders = ({user, otherUsername}: { user: UserAuth, otherUsername: string }
             try {
                 let response;
 
-                const decoded: any = jwt_decode(user.accessToken);
-
                 if (decoded.rol[0] === "ADMIN") {
                     if(!otherUsername) throw new Error("No otherUsername provided");
                     response = await connection.findOrdersByUser(user, otherUsername, searchQuery, {page, size});
@@ -131,25 +129,24 @@ const Orders = ({user, otherUsername}: { user: UserAuth, otherUsername: string }
             render: (action) => {
 
                 return <>
-                    {action.status === 0 && (<></>)}
-                    {action.status !== 0 && (<>
+                    {action.status === 0 && (<>
                         <Button style={{color: "green"}} type="text" shape={"circle"} icon={<CheckCircleOutlined />} color={"green"} onClick={async () => {
                             try {
-                                //await connection.approveOrder(user, action.id);
-                                //fetchOrdersQuery.refetch();
+                                await connection.approveOrder(user, action.id);
+                                fetchOrdersQuery.refetch();
                                 notificationContext.success("Order approved successfully");
-                            } catch (e) {
-                                //notificationContext.error("Order completion failed (" + e.message + ")");
+                            } catch (e: any) {
+                                notificationContext.error("Order completion failed (" + e.message + ")");
                             }
                         }} ></Button>
 
                         <Button style={{color: "red"}} type="text" shape={"circle"} icon={<CloseCircleOutlined />} onClick={async () => {
                             try {
-                                //await connection.rejectOrder(user, action.id);
-                                //fetchOrdersQuery.refetch();
+                                await connection.rejectOrder(user, action.id);
+                                fetchOrdersQuery.refetch();
                                 notificationContext.warning("Order rejected successfully");
-                            } catch (e) {
-                                //notificationContext.error("Order rejection failed (" + e.message + ")");
+                            } catch (e: any) {
+                                notificationContext.error("Order rejection failed (" + e.message + ")");
                             }
                         }} ></Button>
                 </>)}
@@ -167,7 +164,7 @@ const Orders = ({user, otherUsername}: { user: UserAuth, otherUsername: string }
 
     const [open, setOpen] = useState(false);
 
-    const [form] = Form.useForm();
+    const [form] = Form.useForm(undefined);
 
     const onCreate = (values: any) => {
         setOpen(false);
@@ -194,11 +191,25 @@ const Orders = ({user, otherUsername}: { user: UserAuth, otherUsername: string }
                 />
             </Typography.Title>
 
-            <OrderCreateForm user={user} open={open} onCreate={onCreate} onError={onError} onCancel={
+            <OrderCreateForm user={user} open={open} otherUsername={otherUsername} onCreate={onCreate} onError={onError} onCancel={
                 () => {
                     setOpen(false);
                 }
             } />
+
+            <Form
+                form={form}
+                layout='vertical'
+                style={{ maxWidth: 600 }}
+                onFinish={(values) => {
+                    setSearchQuery(() => values.searchQuery);
+                }}
+            >
+                <Form.Item label="Search" name="searchQuery">
+                    <Input placeholder="Enter search query here" />
+                </Form.Item>
+
+            </Form>
 
             {isOrdersLoading && (<>
                 <Skeleton active/>
@@ -211,20 +222,6 @@ const Orders = ({user, otherUsername}: { user: UserAuth, otherUsername: string }
             </>)}
 
             {ordersData && (<>
-                <Form
-                    form={form}
-                    layout='vertical'
-                    style={{ maxWidth: 600 }}
-                    onFinish={(values) => {
-                        setSearchQuery(() => values.searchQuery);
-                    }}
-                >
-                    <Form.Item label="Search" name="searchQuery">
-                        <Input placeholder="Enter search query here" />
-                    </Form.Item>
-
-                </Form>
-
                 <Table columns={columns} dataSource={ordersData.orders} pagination={{
                     defaultPageSize: size,
                     showSizeChanger: true,

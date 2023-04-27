@@ -14,13 +14,14 @@ interface Values {
 
 interface OrderCreateFormProps {
     user: UserAuth;
+    otherUsername: string;
     open: boolean;
     onCreate: (values: Values) => void;
     onError: (error: any) => void;
     onCancel: () => void;
 }
 
-const OrderCreateForm = ({ user, open, onCreate, onError, onCancel }: OrderCreateFormProps) => {
+const OrderCreateForm = ({ user, otherUsername, open, onCreate, onError, onCancel }: OrderCreateFormProps) => {
     const [form] = Form.useForm();
 
     const [loading, setLoading] = React.useState(false);
@@ -41,7 +42,7 @@ const OrderCreateForm = ({ user, open, onCreate, onError, onCancel }: OrderCreat
                     .then((values) => {
                         setLoading(true);
 
-                        connection.createOrder(user, values.description)
+                        connection.createOrderForUser(user, otherUsername, values.description)
                             .then(() => {
                                 form.resetFields();
                                 onCreate(values);
