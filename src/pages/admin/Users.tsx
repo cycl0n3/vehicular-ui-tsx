@@ -4,7 +4,7 @@ import UserContext from "../../context/UserContext";
 
 import {connection} from "../../base/Connection";
 
-import {Avatar, Badge, List, Skeleton, Table, Tag, Typography} from "antd";
+import {Avatar, Badge, Form, Input, List, Skeleton, Table, Tag, Typography} from "antd";
 
 import type {ColumnsType} from "antd/es/table";
 
@@ -31,11 +31,13 @@ const Users = () => {
     const [page, setPage] = React.useState<number>(0);
     const [size, setSize] = React.useState<number>(5);
 
+    const [searchQuery, setSearchQuery] = React.useState<string>("");
+
     const fetchUsersQuery = useQuery({
-        queryKey: ["fetchUsersQuery:Users", userAuth, page, size],
+        queryKey: ["fetchUsersQuery:Users", userAuth, searchQuery, page, size],
         queryFn: async () => {
             try {
-                const response = await connection.findAllUsers(userAuth, {page, size});
+                const response = await connection.findAllUsers(userAuth, searchQuery, {page, size});
 
                 response.data.users = response.data.users.map((user: any) => {
                     return {
@@ -63,7 +65,7 @@ const Users = () => {
 
     useEffect(() => {
         setPage(() => 0);
-    }, [size]);
+    }, [size, searchQuery]);
 
     const {isLoading, isError, data: structure, isPreviousData} = fetchUsersQuery;
 
@@ -78,11 +80,11 @@ const Users = () => {
             dataIndex: "profilePicture",
             key: "profilePicture",
             render: (profilePicture: string) => (
-                <a>
+                <>
                     {profilePicture
                         ? <Avatar src={`data:image/jpg;base64,${profilePicture}`}/>
                         : <Avatar icon={<UserOutlined/>}/>}
-                </a>
+                </>
             )
         },
         {
@@ -157,7 +159,22 @@ const Users = () => {
                 <Typography.Text type="danger">Error fetching users</Typography.Text>
             )}
 
+
+
             {structure && (<>
+                <Form
+                    layout='vertical'
+                    style={{ maxWidth: 600 }}
+                    onFinish={(values) => {
+                        setSearchQuery(() => values.searchQuery);
+                    }}
+                >
+                    <Form.Item label="Search" name="searchQuery">
+                        <Input placeholder="Enter search query here" />
+                    </Form.Item>
+
+                </Form>
+
                 <Typography.Title level={4}>Users</Typography.Title>
 
                 <Table columns={columns} dataSource={structure.users} pagination={{

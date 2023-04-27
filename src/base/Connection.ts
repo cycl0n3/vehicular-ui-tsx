@@ -92,11 +92,12 @@ const findAllOrders = (user: UserAuth | null, pageRequest: PageRequest, text: st
     });
 }
 
-const findAllUsers = (user: UserAuth | null, pageRequest: PageRequest) => {
+const findAllUsers = (user: UserAuth | null, searchQuery: string, pageRequest: PageRequest) => {
     if (!user) return Promise.reject("UserAuth is null");
 
     return instance.get<UserPageResponse>("/users", {
         params: {
+            searchQuery: searchQuery,
             page: pageRequest.page,
             size: pageRequest.size,
         },

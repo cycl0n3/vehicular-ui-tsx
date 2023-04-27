@@ -27,8 +27,6 @@ const SignUp = () => {
         const email = values.email;
         const password = values.password;
 
-        console.log("Success:", values)
-
         setLoading(true);
 
         connection.register(title, name, username, age, email, password)
@@ -50,9 +48,6 @@ const SignUp = () => {
                 setLoading(false);
                 notificationContext.error("Sign Up Failed: " + error.response.data.message);
             });
-    };
-
-    const onFinishFailed = (errorInfo: ValidateErrorEntity<any>): void => {
     };
 
     useEffect(() => {
@@ -80,9 +75,6 @@ const SignUp = () => {
                 style={{maxWidth: "auto"}}
                 initialValues={{remember: true}}
                 onFinish={(values: any) => onFinish(values)}
-                onFinishFailed={(errorInfo: ValidateErrorEntity<any>) =>
-                    onFinishFailed(errorInfo)
-                }
                 autoComplete="off"
             >
                 <Form.Item name="title" label="Title" rules={[{ required: true }]}>
