@@ -21,6 +21,7 @@ import {Button, Form, FormInstance, Input, Modal, Skeleton, Typography} from "an
 import {format} from "date-fns";
 
 import OrderStatus from "./OrderStatus";
+import OrderCreateForm from "./OrderCreateForm";
 
 const Orders = ({user}: { user: UserAuth }) => {
 
@@ -98,38 +99,17 @@ const Orders = ({user}: { user: UserAuth }) => {
         },
     ];
 
-    const [orderDialogOpen, setOrderDialogOpen] = useState(false);
-    const [orderDialogConfirmLoading, setOrderDialogConfirmLoading] = useState(false);
-    const orderDialogForm = useRef({} as FormInstance<any>);
+    const [open, setOpen] = useState(false);
 
-    const handleOrderDialogOk = () => {
-        setOrderDialogConfirmLoading(true);
-
-        orderDialogForm.current.validateFields().then((values: any) => {
-            connection.createOrder(user, values.description).then(() => {
-                orderDialogForm.current.resetFields();
-
-                fetchMyOrdersQuery.refetch();
-                setOrderDialogOpen(false);
-                notificationContext.success("Order created successfully");
-            }).catch((error: any) => {
-                notificationContext.error("Order creation failed (" + error.message + ")");
-            }).finally(() => {
-                setOrderDialogConfirmLoading(false);
-            });
-        }).catch((error: any) => {
-            notificationContext.error("Order creation failed (" + error.message + ")");
-        }).finally(() => {
-            setOrderDialogConfirmLoading(false);
-        });
+    const onCreate = (values: any) => {
+        setOpen(false);
+        fetchMyOrdersQuery.refetch();
+        notificationContext.success("Order created successfully");
     };
 
-    const handleOrderDialogCancel = () => {
-        orderDialogForm.current.resetFields();
-
-        setOrderDialogConfirmLoading(false);
-        setOrderDialogOpen(false);
-    };
+    const onError = (error: any) => {
+        notificationContext.error("Order creation failed (" + error.message + ")");
+    }
 
     return (
         <div>
@@ -141,36 +121,16 @@ const Orders = ({user}: { user: UserAuth }) => {
                     icon={<PlusCircleTwoTone size={25}/>}
                     size="large"
                     onClick={() => {
-                        setOrderDialogOpen(true);
+                        setOpen(true);
                     }}
                 />
             </Typography.Title>
 
-            <Modal
-                title="Add new order"
-                open={orderDialogOpen}
-                onOk={handleOrderDialogOk}
-                confirmLoading={orderDialogConfirmLoading}
-                onCancel={handleOrderDialogCancel}
-            >
-                <Form
-                    ref={orderDialogForm}
-                    name="order-form"
-                    labelCol={{span: 8}}
-                    wrapperCol={{span: 16}}
-                    style={{maxWidth: 600}}
-                    initialValues={{remember: true}}
-                    autoComplete="off"
-                >
-                    <Form.Item
-                        label="Order Description"
-                        name="description"
-                        rules={[{required: true, message: 'Please enter order description'}]}
-                    >
-                        <Input/>
-                    </Form.Item>
-                </Form>
-            </Modal>
+            <OrderCreateForm user={user} open={open} onCreate={onCreate} onError={onError} onCancel={
+                () => {
+                    setOpen(false);
+                }
+            } />
 
             {isOrdersLoading && (<>
                 <Skeleton active/>
