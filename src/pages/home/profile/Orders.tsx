@@ -21,9 +21,10 @@ import {Button, Form, FormInstance, Input, Modal, Skeleton, Typography} from "an
 import {format} from "date-fns";
 
 import OrderStatus from "./OrderStatus";
+
 import OrderCreateForm from "./OrderCreateForm";
 
-const Orders = ({user}: { user: UserAuth }) => {
+const Orders = ({user, otherUsername}: { user: UserAuth, otherUsername: string }) => {
 
     const notificationContext = useContext(NotificationContext);
 
@@ -36,11 +37,17 @@ const Orders = ({user}: { user: UserAuth }) => {
         setPage(() => 0);
     }, [size, searchQuery]);
 
-    const fetchMyOrdersQuery = useQuery({
-        queryKey: ["fetchMyOrdersQuery:Orders", user, searchQuery, page, size],
+    useEffect(() => {
+        form.resetFields();
+        setSearchQuery(() => "");
+    }, [otherUsername]);
+
+
+    const fetchOrdersQuery = useQuery({
+        queryKey: ["fetchOrdersQuery:Orders", user, otherUsername, searchQuery, page, size],
         queryFn: async () => {
             try {
-                const response = await connection.findMyOrders(user, searchQuery, {page, size});
+                const response = await connection.findOrdersByUser(user, otherUsername, searchQuery, {page, size});
 
                 response.data.orders = response.data.orders.map((order: OrderResponse) => {
                     return {
@@ -68,7 +75,7 @@ const Orders = ({user}: { user: UserAuth }) => {
         isError: isOrdersError,
         data: ordersData,
         isPreviousData: isOrdersPreviousData,
-    } = fetchMyOrdersQuery;
+    } = fetchOrdersQuery;
 
     const columns: ColumnsType<OrderResponse> = [
         {
@@ -101,9 +108,11 @@ const Orders = ({user}: { user: UserAuth }) => {
 
     const [open, setOpen] = useState(false);
 
+    const [form] = Form.useForm();
+
     const onCreate = (values: any) => {
         setOpen(false);
-        fetchMyOrdersQuery.refetch();
+        fetchOrdersQuery.refetch();
         notificationContext.success("Order created successfully");
     };
 
@@ -114,7 +123,7 @@ const Orders = ({user}: { user: UserAuth }) => {
     return (
         <div>
             <Typography.Title level={4} style={{margin: 0}}>
-                Orders
+                Orders for {otherUsername}
                 <Button
                     type="text"
                     shape="circle"
@@ -144,6 +153,7 @@ const Orders = ({user}: { user: UserAuth }) => {
 
             {ordersData && (<>
                 <Form
+                    form={form}
                     layout='vertical'
                     style={{ maxWidth: 600 }}
                     onFinish={(values) => {

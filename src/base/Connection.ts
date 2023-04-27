@@ -93,6 +93,22 @@ const findAllOrders = (user: UserAuth | null, pageRequest: PageRequest, text: st
     });
 }
 
+const findOrdersByUser = (user: UserAuth | null, username: string, searchQuery: string, pageRequest: PageRequest) => {
+    if (!user) return Promise.reject("UserAuth is null");
+
+    return instance.get<OrderPageResponse>(`/orders/other/${username}`, {
+        params: {
+            page: pageRequest.page,
+            size: pageRequest.size,
+            searchQuery: searchQuery,
+        },
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user.accessToken}`,
+        }
+    });
+}
+
 const findAllUsers = (user: UserAuth | null, searchQuery: string, pageRequest: PageRequest) => {
     if (!user) return Promise.reject("UserAuth is null");
 
@@ -152,4 +168,5 @@ export const connection = {
     findAllUsers,
     createOrder,
     findAllOrders,
+    findOrdersByUser
 };

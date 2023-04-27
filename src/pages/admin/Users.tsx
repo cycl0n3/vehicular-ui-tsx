@@ -4,7 +4,7 @@ import UserContext from "../../context/UserContext";
 
 import {connection} from "../../base/Connection";
 
-import {Avatar, Badge, Form, Input, List, Skeleton, Table, Tag, Typography} from "antd";
+import {Avatar, Badge, Form, FormInstance, Input, List, Modal, Skeleton, Table, Tag, Typography} from "antd";
 
 import type {ColumnsType} from "antd/es/table";
 
@@ -21,6 +21,7 @@ import NotificationContext from "../../context/NotificationContext";
 import {UserResponse} from "../../types/UserResponse";
 
 import {DEFAULT_USER_PAGE_RESPONSE} from "../../types/UserPageResponse";
+import Orders from "../home/profile/Orders";
 
 const Users = () => {
 
@@ -69,6 +70,8 @@ const Users = () => {
 
     const {isLoading, isError, data: structure, isPreviousData} = fetchUsersQuery;
 
+    const [activeUser, setActiveUser] = React.useState<string>('');
+
     const columns: ColumnsType<UserResponse> = [
         {
             title: "Id",
@@ -96,12 +99,16 @@ const Users = () => {
             title: "Username",
             dataIndex: "username",
             key: "username",
-            render: (username: string) => (
-                // TODO: On click of username, open a drawer with user orders
-                <a>
+            render: (username: string) => (<>
+                <a onClick={
+                    () => {
+                        setActiveUser(username);
+                        showModal();
+                    }
+                }>
                     {username}
                 </a>
-            )
+            </>)
         },
         {
             title: "Email",
@@ -147,6 +154,28 @@ const Users = () => {
         },
     ];
 
+    const [open, setOpen] = React.useState<boolean>(false);
+
+    const modalForm = React.useRef<FormInstance>(null);
+
+    const showModal = () => {
+        setOpen(true);
+    };
+
+    const handleOk = () => {
+        console.log('Clicked ok button', modalForm)
+        setOpen(false);
+        // @ts-ignore
+        modalForm.current.resetFields();
+    };
+
+    const handleCancel = () => {
+        console.log('Clicked cancel button', modalForm)
+        setOpen(false);
+        // @ts-ignore
+        modalForm.current.resetFields();
+    };
+
     return (
         <div>
             {isLoading && (<>
@@ -159,7 +188,9 @@ const Users = () => {
                 <Typography.Text type="danger">Error fetching users</Typography.Text>
             )}
 
-
+            {userAuth && <Modal open={open} width={'1024px'} onOk={handleOk} onCancel={handleCancel}>
+                <Orders user={userAuth} otherUsername={activeUser} />
+            </Modal>}
 
             {structure && (<>
                 <Form
