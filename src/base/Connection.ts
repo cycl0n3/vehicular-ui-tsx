@@ -61,13 +61,14 @@ const findMe = (user: UserAuth | null) => {
     });
 };
 
-const findMyOrders = (user: UserAuth | null, pageRequest: PageRequest) => {
+const findMyOrders = (user: UserAuth | null, searchQuery: string, pageRequest: PageRequest) => {
     if (!user) return Promise.reject("UserAuth is null");
 
     return instance.get<OrderPageResponse>("/orders/me", {
         params: {
             page: pageRequest.page,
             size: pageRequest.size,
+            searchQuery: searchQuery,
         },
         headers: {
             "Content-Type": "application/json",

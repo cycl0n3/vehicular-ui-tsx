@@ -29,15 +29,17 @@ const Orders = ({user}: { user: UserAuth }) => {
     const [page, setPage] = React.useState<number>(0);
     const [size, setSize] = React.useState<number>(5);
 
+    const [searchQuery, setSearchQuery] = React.useState<string>("");
+
     useEffect(() => {
         setPage(() => 0);
-    }, [size]);
+    }, [size, searchQuery]);
 
     const fetchMyOrdersQuery = useQuery({
-        queryKey: ["fetchMyOrdersQuery:Orders", user, page, size],
+        queryKey: ["fetchMyOrdersQuery:Orders", user, searchQuery, page, size],
         queryFn: async () => {
             try {
-                const response = await connection.findMyOrders(user, {page, size});
+                const response = await connection.findMyOrders(user, searchQuery, {page, size});
 
                 response.data.orders = response.data.orders.map((order: OrderResponse) => {
                     return {
@@ -51,6 +53,7 @@ const Orders = ({user}: { user: UserAuth }) => {
                 return DEFAULT_ORDER_PAGE_RESPONSE;
             }
         },
+        keepPreviousData: true,
         refetchOnWindowFocus: false,
         refetchOnReconnect: true,
         enabled: !!user,
@@ -180,6 +183,19 @@ const Orders = ({user}: { user: UserAuth }) => {
             </>)}
 
             {ordersData && (<>
+                <Form
+                    layout='vertical'
+                    style={{ maxWidth: 600 }}
+                    onFinish={(values) => {
+                        setSearchQuery(() => values.searchQuery);
+                    }}
+                >
+                    <Form.Item label="Search" name="searchQuery">
+                        <Input placeholder="Enter search query here" />
+                    </Form.Item>
+
+                </Form>
+
                 <Table columns={columns} dataSource={ordersData.orders} pagination={{
                     defaultPageSize: size,
                     showSizeChanger: true,
