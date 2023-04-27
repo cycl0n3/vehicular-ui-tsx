@@ -16,13 +16,13 @@ const UserContext = React.createContext<UserContextType>({} as UserContextType);
 
 const UserContextProvider = ({children}: {children: ReactNode}) => {
     useEffect(() => {
-        const user = getUser();
-        setUser(user);
+        const user = getUserAuth();
+        setUserAuth(user);
     }, []);
 
-    const [localUser, setUser] = React.useState<UserAuth | null>(null);
+    const [userAuth, setUserAuth] = React.useState<UserAuth | null>(null);
 
-    const getUser = () => {
+    const getUserAuth = () => {
         try {
             const userStr = localStorage.getItem('userAuth') || '';
             return JSON.parse(userStr) as UserAuth;
@@ -34,12 +34,12 @@ const UserContextProvider = ({children}: {children: ReactNode}) => {
 
     const login = (user: UserAuth) => {
         localStorage.setItem('userAuth', JSON.stringify(user));
-        setUser(user);
+        setUserAuth(user);
     }
 
     const logout = () => {
         localStorage.removeItem('userAuth');
-        setUser(null);
+        setUserAuth(null);
     }
 
     const valid = () => {
@@ -58,7 +58,7 @@ const UserContextProvider = ({children}: {children: ReactNode}) => {
 
     return (
         <UserContext.Provider
-            value={{userAuth: localUser, /*getUser,*/ valid, login, logout}}>
+            value={{userAuth, /*getUserAuth,*/ valid, login, logout}}>
             {children}
         </UserContext.Provider>
     )

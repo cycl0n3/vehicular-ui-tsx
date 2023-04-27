@@ -41,7 +41,6 @@ const Base = () => {
 
     const navigateToRoute = (key: string): void => {
         const path: SiteRoute = siteRoutes.find(route => route.key === key) || siteRoutes[0];
-        // setCurrentRoute(path);
         navigate(path.link);
     }
 
@@ -49,16 +48,12 @@ const Base = () => {
 
 
     useEffect(() => {
-        console.log("Base: useEffect: siteRoutes: ", siteRoutes);
-
         setSitesRoutesFiltered(siteRoutes.filter((route: SiteRoute) => {
             return route.roles.includes(GUEST_ROLE);
         }));
     }, []);
 
     useEffect(() => {
-        console.log("Base: useEffect: userAuth: ", userAuth);
-
         if(!userAuth) {
             setSitesRoutesFiltered(siteRoutes.filter((route: SiteRoute) => {
                 return route.roles.includes(GUEST_ROLE);
@@ -99,7 +94,7 @@ const Base = () => {
 
     const fileUploadOK = (): void => {
         if (!file) {
-            notificationContext.success("Please select a file to upload.");
+            notificationContext.error("Please select a file to upload.");
             return;
         }
 

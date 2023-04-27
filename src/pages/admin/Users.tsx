@@ -78,11 +78,11 @@ const Users = () => {
             dataIndex: "profilePicture",
             key: "profilePicture",
             render: (profilePicture: string) => (
-                <>
+                <a>
                     {profilePicture
                         ? <Avatar src={`data:image/jpg;base64,${profilePicture}`}/>
                         : <Avatar icon={<UserOutlined/>}/>}
-                </>
+                </a>
             )
         },
         {
@@ -94,6 +94,11 @@ const Users = () => {
             title: "Username",
             dataIndex: "username",
             key: "username",
+            render: (username: string) => (
+                <a>
+                    {username}
+                </a>
+            )
         },
         {
             title: "Email",
