@@ -24,7 +24,7 @@ const UserContextProvider = ({children}: {children: ReactNode}) => {
 
     const getUser = () => {
         try {
-            const userStr = localStorage.getItem('userAuth') || '{}';
+            const userStr = localStorage.getItem('userAuth') || '';
             return JSON.parse(userStr) as UserAuth;
         } catch (e) {
             logout();

@@ -59,19 +59,12 @@ const Base = () => {
     useEffect(() => {
         console.log("Base: useEffect: userAuth: ", userAuth);
 
-        if (userAuth) {
-            fetchMeQuery.refetch();
-        } else {
+        if(!userAuth) {
             setSitesRoutesFiltered(siteRoutes.filter((route: SiteRoute) => {
                 return route.roles.includes(GUEST_ROLE);
             }));
         }
     }, [userAuth]);
-
-    useEffect(() => {
-        console.log("Base: useEffect: user: ", user);
-    }, [user]);
-
 
     const fetchMeQuery = useQuery({
         queryKey: ["fetchMeQuery:_Base", userAuth],
@@ -224,6 +217,7 @@ const Base = () => {
                         }/>
                     </Form.Item>
                 </Form>
+                
             </Modal>
 
             <Footer style={{textAlign: "center"}}>

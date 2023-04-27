@@ -122,7 +122,10 @@ const uploadProfilePicture = (user: UserAuth | null, file: File) => {
     });
 }
 
+const UPLOAD_PROFILE_PICTURE_URL = config.url.API_BASE_URL + "/" +config.url.API + "/" +config.url.API_VERSION + "/users/profile-picture";
+
 export const connection = {
+    UPLOAD_PROFILE_PICTURE_URL,
     authenticate,
     register,
     findMe,
