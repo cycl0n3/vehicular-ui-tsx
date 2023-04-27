@@ -16,6 +16,8 @@ const PrivateRoute = ({children}: {children: ReactNode}): JSX.Element => {
     const localUserContext = useContext(UserContext);
 
     useEffect(() => {
+        console.log("PrivateRoute: useEffect", localUserContext.valid())
+
         if (!localUserContext.valid()) {
             const url = siteRoutes.find(route => route.key === "sign-in")?.link || "/";
             navigate(url);
