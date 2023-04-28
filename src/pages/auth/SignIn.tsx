@@ -24,6 +24,14 @@ const SignIn = () => {
 
     const dispatch = useAppDispatch();
 
+    const navigate = useNavigate();
+
+    const {login, logout} = useContext(UserContext);
+
+    const [loading, setLoading] = React.useState(false);
+
+    const notificationContext= useContext(NotificationContext);
+
     const onFinish = (values: any): void => {
         setLoading(true);
 
@@ -54,14 +62,6 @@ const SignIn = () => {
     useEffect(() => {
         logout(); dispatch(USER.logout());
     }, []);
-
-    const navigate = useNavigate();
-
-    const {login, logout} = useContext(UserContext);
-
-    const [loading, setLoading] = React.useState(false);
-
-    const notificationContext= useContext(NotificationContext);
 
     return (
         <div className="sign-in">

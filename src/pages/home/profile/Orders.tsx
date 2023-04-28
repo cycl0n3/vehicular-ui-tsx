@@ -16,7 +16,7 @@ import {OrderResponse} from "../../../types/OrderResponse";
 
 import {CheckCircleOutlined, CloseCircleOutlined, PlusCircleTwoTone, SearchOutlined} from "@ant-design/icons";
 
-import {Button, Form, FormInstance, Input, Modal, Skeleton, Typography} from "antd";
+import {Button, Form, Input, Skeleton, Typography} from "antd";
 
 import {format} from "date-fns";
 
@@ -166,16 +166,6 @@ const Orders = ({user, otherUsername}: { user: UserAuth, otherUsername: string }
 
     const [form] = Form.useForm(undefined);
 
-    const onCreate = (values: any) => {
-        setOpen(false);
-        fetchOrdersQuery.refetch();
-        notificationContext.success("Order created successfully");
-    };
-
-    const onError = (error: any) => {
-        notificationContext.error("Order creation failed (" + error.message + ")");
-    }
-
     return (
         <div>
             <Typography.Title level={4} style={{margin: 0}}>
@@ -191,8 +181,19 @@ const Orders = ({user, otherUsername}: { user: UserAuth, otherUsername: string }
                 />
             </Typography.Title>
 
-            <OrderCreateForm user={user} open={open} otherUsername={otherUsername} onCreate={onCreate} onError={onError} onCancel={
-                () => {
+            <OrderCreateForm
+                user={user}
+                open={open}
+                otherUsername={otherUsername}
+                onCreate={(values: any) => {
+                    setOpen(false);
+                    fetchOrdersQuery.refetch();
+                    notificationContext.success("Order created successfully");
+                }}
+                onError={(error: any) => {
+                    notificationContext.error("Order creation failed (" + error.message + ")");
+                }}
+                onCancel={() => {
                     setOpen(false);
                 }
             } />
